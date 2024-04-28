@@ -97,6 +97,7 @@ To share this hypothetically-sensitive value with your team, simply use the `env
 netlify env:import .env
 ```
 
+
 Now, when you go to **Site configuration > Environment variables** in the Netlify UI, you should see your environment variable that you had saved in your `.env` file. 
 
 You can adjust deploy contexts and scopes in the UI, and in the CLI too. 
