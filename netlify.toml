@@ -2,14 +2,4 @@
   command = "npm run build"
 
 [images]
-  remote_images = ["https://github.com/.*"]
-
-[[plugins]]
-  package = "@netlify/plugin-nextjs"
-
-[[plugins]]
-  package = "netlify-plugin-cloudinary"
-
-  [plugins.inputs]
-  cloudName = "dzk3zrurn"
-  
+  remote_images = ["https://github.com/.*" , "https://upload.wikimedia.org/.*"]
