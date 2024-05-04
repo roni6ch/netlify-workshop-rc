@@ -16,12 +16,12 @@ export default function Index() {
           <button type="submit">Send</button>
         </p>
       </form>
-
-      local
-      <img src="photos/beach.jpg" />
       netlify
       <img src="https://workshop-rc-2024.netlify.app/.netlify/images?url=/photos/beach.jpg" />
-      {/* <img src="https://upload.wikimedia.org/wikipedia/commons/f/ff/Pizigani_1367_Chart_10MB.jpg" /> */}
+     
+      local
+      <img src="photos/beach.jpg" />
+     {/* <img src="https://upload.wikimedia.org/wikipedia/commons/f/ff/Pizigani_1367_Chart_10MB.jpg" /> */}
 
       <Nav title="Netlify Workshop" />
       <section className="flex columns">
