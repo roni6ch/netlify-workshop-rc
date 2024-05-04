@@ -1,11 +1,24 @@
 import Link from "next/link";
-
 import Nav from "~/components/Nav";
 
 export default function Index() {
+
+  const image = 'https://d2w7f1pl8j4yzn.cloudfront.net/growth/onboarding-guide/task-persons/task-expense_policy.png';
+  const netlifyImage = `https://workshop-rc-2024.netlify.app/.netlify/images?url=${image}`;
+  const encode = encodeURIComponent(image)
+  const formattedNetlifyImage = `https://workshop-rc-2024.netlify.app/.netlify/images?url=${encode}`;
   return (
     <main>
-      <form name="contact" data-netlify="true">
+      netlify
+      <img src={netlifyImage} />
+      formattedNetlifyImage
+      <img src={formattedNetlifyImage} />
+     
+      image
+      <img src={image} />
+     {/* <img src="https://upload.wikimedia.org/wikipedia/commons/f/ff/Pizigani_1367_Chart_10MB.jpg" /> */}
+
+     <form name="contact" data-netlify="true">
         <p>
           <label>Name <input type="text" name="name" /></label>
         </p>
@@ -16,12 +29,6 @@ export default function Index() {
           <button type="submit">Send</button>
         </p>
       </form>
-      netlify
-      <img src="https://workshop-rc-2024.netlify.app/.netlify/images?url=https://d2w7f1pl8j4yzn.cloudfront.net/growth/onboarding-guide/task-persons/task-expense_policy.png" />
-     
-      local
-      <img src="https://d2w7f1pl8j4yzn.cloudfront.net/growth/onboarding-guide/task-persons/task-expense_policy.png" />
-     {/* <img src="https://upload.wikimedia.org/wikipedia/commons/f/ff/Pizigani_1367_Chart_10MB.jpg" /> */}
 
       <Nav title="Netlify Workshop" />
       <section className="flex columns">
