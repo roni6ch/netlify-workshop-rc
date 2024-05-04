@@ -17,7 +17,7 @@ export default function Index() {
         </p>
       </form>
       netlify
-      <img src="https://workshop-rc-2024.netlify.app/.netlify/images?url=/https://d2w7f1pl8j4yzn.cloudfront.net/growth/onboarding-guide/task-persons/task-expense_policy.png" />
+      <img src="https://workshop-rc-2024.netlify.app/.netlify/images?url=https://d2w7f1pl8j4yzn.cloudfront.net/growth/onboarding-guide/task-persons/task-expense_policy.png" />
      
       local
       <img src="https://d2w7f1pl8j4yzn.cloudfront.net/growth/onboarding-guide/task-persons/task-expense_policy.png" />
