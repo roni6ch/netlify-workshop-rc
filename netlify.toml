@@ -3,6 +3,6 @@
 
 [images]
   remote_images = [
-    "https://github.com/.*",
-      "https://d2w7f1pl8j4yzn.cloudfront.net/.*",
+    "https://upload.wikimedia.org/.*",
+    "https://d2w7f1pl8j4yzn.cloudfront.net/.*",
 ]

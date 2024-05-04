@@ -1,20 +1,13 @@
 import Link from "next/link";
 import Nav from "~/components/Nav";
+import ImageRenderCheck from "./image-render-check";
 
 export default function Index() {
-
-  const image = 'https://d2w7f1pl8j4yzn.cloudfront.net/growth/onboarding-guide/task-persons/task-expense_policy.png';
-  const netlifyImage = `https://deploy-preview-9--workshop-rc-2024.netlify.app//.netlify/images?url=${image}`;
   return (
     <main>
-      netlify
-      <img src={netlifyImage} />
-     
-      image
-      <img src={image} />
-     {/* <img src="https://upload.wikimedia.org/wikipedia/commons/f/ff/Pizigani_1367_Chart_10MB.jpg" /> */}
+      <ImageRenderCheck />
 
-     <form name="contact" data-netlify="true">
+      <form name="contact" data-netlify="true">
         <p>
           <label>Name <input type="text" name="name" /></label>
         </p>
