@@ -11,13 +11,13 @@ export default function ImageRenderCheck() {
         setStartTime(new Date().getTime());
     }, []);
 
-    const handleImageLoadNetlify = async (event: any) => {
+    const handleImageLoadNetlify = async (event: { target: { naturalWidth: any; naturalHeight: any; }; }) => {
         const finishTime = new Date().getTime();
         setLoadTimeNetlify((finishTime - startTime) / 1000);
         setImageSizeNetlify({ width: event.target.naturalWidth, height: event.target.naturalHeight });
     };
 
-    const handleImageLoadRegular = async (event: any) => {
+    const handleImageLoadRegular = async (event: { target: { naturalWidth: any; naturalHeight: any; }; }) => {
         const finishTime = new Date().getTime();
         setLoadTimeRegular((finishTime - startTime) / 1000);
         setImageSizeRegular({ width: event.target.naturalWidth, height: event.target.naturalHeight });
@@ -35,13 +35,13 @@ export default function ImageRenderCheck() {
                     <b>Netlify image</b>
                     <p>Image load time: {loadTimeNetlify.toFixed(3)} s</p>
                     <p>Image size: {imageSizeNetlify.width}x{imageSizeNetlify.height}</p>
-                    <img src={netlifyImage} onLoad={handleImageLoadNetlify} />
+                    <img src={netlifyImage} onLoad={() => handleImageLoadNetlify} />
                 </div>
                 <div className="div2">
                     <b>Regular image</b>
                     <p>Image load time: {loadTimeRegular.toFixed(3)} s</p>
                     <p>Image size: {imageSizeRegular.width}x{imageSizeRegular.height}</p>
-                    <img src={image} onLoad={handleImageLoadRegular} />
+                    <img src={image} onLoad={() => handleImageLoadRegular} />
                 </div>
             </div>
 
@@ -53,13 +53,13 @@ export default function ImageRenderCheck() {
                     <b>Netlify image</b>
                     <p>Image load time: {loadTimeNetlify.toFixed(3)} s</p>
                     <p>Image size: {imageSizeNetlify.width}x{imageSizeNetlify.height}</p>
-                    <img src={netlifyHeavyImage} onLoad={handleImageLoadNetlify} />
+                    <img src={netlifyHeavyImage} onLoad={() => handleImageLoadNetlify} />
                 </div>
                 <div className="div2">
                     <b>Regular image</b>
                     <p>Image load time: {loadTimeRegular.toFixed(3)} s</p>
                     <p>Image size: {imageSizeRegular.width}x{imageSizeRegular.height}</p>
-                    <img src={heavyImage} onLoad={handleImageLoadRegular} />
+                    <img src={heavyImage} onLoad={() => handleImageLoadRegular} />
                 </div>
             </div>
         </>

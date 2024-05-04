@@ -5,7 +5,9 @@ import ImageRenderCheck from "./image-render-check";
 export default function Index() {
   return (
     <main>
-      <ImageRenderCheck />
+      <Link href="/image-render-check">
+        ImageRenderCheck
+      </Link>
 
       <form name="contact" data-netlify="true">
         <p>
