@@ -11,16 +11,16 @@ export default function ImageRenderCheck() {
         setStartTime(new Date().getTime());
     }, []);
 
-    const handleImageLoadNetlify = async (event: { target: { naturalWidth: number; naturalHeight: number; }; }) => {
+    const handleImageLoadNetlify = async (event: React.SyntheticEvent<HTMLImageElement, Event>) => {
         const finishTime = new Date().getTime();
         setLoadTimeNetlify((finishTime - startTime) / 1000);
-        setImageSizeNetlify({ width: event.target.naturalWidth, height: event.target.naturalHeight });
+        setImageSizeNetlify({ width: event.currentTarget.naturalWidth, height: event.currentTarget.naturalHeight });
     };
 
-    const handleImageLoadRegular = async (event: { target: { naturalWidth: number; naturalHeight: number; }; }) => {
+    const handleImageLoadRegular = async (event: React.SyntheticEvent<HTMLImageElement, Event>) => {
         const finishTime = new Date().getTime();
         setLoadTimeRegular((finishTime - startTime) / 1000);
-        setImageSizeRegular({ width: event.target.naturalWidth, height: event.target.naturalHeight });
+        setImageSizeRegular({ width: event.currentTarget.naturalWidth, height: event.currentTarget.naturalHeight });
     };
 
     const image = 'https://d2w7f1pl8j4yzn.cloudfront.net/growth/onboarding-guide/task-persons/task-expense_policy.png';
@@ -35,17 +35,17 @@ export default function ImageRenderCheck() {
                     <b>Netlify image</b>
                     <p>Image load time: {loadTimeNetlify.toFixed(3)} s</p>
                     <p>Image size: {imageSizeNetlify.width}x{imageSizeNetlify.height}</p>
-                    <img src={netlifyImage} onLoad={() => handleImageLoadNetlify} />
+                    <img src={netlifyImage} onLoad={handleImageLoadNetlify} />
                 </div>
                 <div className="div2">
                     <b>Regular image</b>
                     <p>Image load time: {loadTimeRegular.toFixed(3)} s</p>
                     <p>Image size: {imageSizeRegular.width}x{imageSizeRegular.height}</p>
-                    <img src={image} onLoad={() => handleImageLoadRegular} />
+                    <img src={image} onLoad={handleImageLoadRegular} />
                 </div>
             </div>
 
-            <br/>
+            <br />
             <b>Heavy image 10MB check</b>
             <div className="images-check">
                 <div className="div1">
