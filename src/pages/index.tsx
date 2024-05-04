@@ -4,15 +4,11 @@ import Nav from "~/components/Nav";
 export default function Index() {
 
   const image = 'https://d2w7f1pl8j4yzn.cloudfront.net/growth/onboarding-guide/task-persons/task-expense_policy.png';
-  const netlifyImage = `https://workshop-rc-2024.netlify.app/.netlify/images?url=${image}`;
-  const encode = encodeURIComponent(image)
-  const formattedNetlifyImage = `https://workshop-rc-2024.netlify.app/.netlify/images?url=${encode}`;
+  const netlifyImage = `https://deploy-preview-9--workshop-rc-2024.netlify.app//.netlify/images?url=${image}`;
   return (
     <main>
       netlify
       <img src={netlifyImage} />
-      formattedNetlifyImage
-      <img src={formattedNetlifyImage} />
      
       image
       <img src={image} />
