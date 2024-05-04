@@ -1,6 +1,5 @@
 import Link from "next/link";
 import Nav from "~/components/Nav";
-import ImageRenderCheck from "./image-render-check";
 
 export default function Index() {
   return (

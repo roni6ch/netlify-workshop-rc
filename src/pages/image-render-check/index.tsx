@@ -11,13 +11,13 @@ export default function ImageRenderCheck() {
         setStartTime(new Date().getTime());
     }, []);
 
-    const handleImageLoadNetlify = async (event: { target: { naturalWidth: any; naturalHeight: any; }; }) => {
+    const handleImageLoadNetlify = async (event: { target: { naturalWidth: number; naturalHeight: number; }; }) => {
         const finishTime = new Date().getTime();
         setLoadTimeNetlify((finishTime - startTime) / 1000);
         setImageSizeNetlify({ width: event.target.naturalWidth, height: event.target.naturalHeight });
     };
 
-    const handleImageLoadRegular = async (event: { target: { naturalWidth: any; naturalHeight: any; }; }) => {
+    const handleImageLoadRegular = async (event: { target: { naturalWidth: number; naturalHeight: number; }; }) => {
         const finishTime = new Date().getTime();
         setLoadTimeRegular((finishTime - startTime) / 1000);
         setImageSizeRegular({ width: event.target.naturalWidth, height: event.target.naturalHeight });
@@ -45,7 +45,6 @@ export default function ImageRenderCheck() {
                 </div>
             </div>
 
-            <br/>
             <br/>
             <b>Heavy image 10MB check</b>
             <div className="images-check">
