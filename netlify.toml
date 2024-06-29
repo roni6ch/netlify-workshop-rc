@@ -2,4 +2,7 @@
   command = "npm run build"
 
 [images]
-  remote_images = ["https://github.com/.*"]
+  remote_images = [
+    "https://upload.wikimedia.org/.*",
+    "https://d2w7f1pl8j4yzn.cloudfront.net/.*",
+]

@@ -1,32 +1,25 @@
 import Link from "next/link";
-
 import Nav from "~/components/Nav";
 
 export default function Index() {
   return (
     <main>
+      <Link href="/image-render-check">
+        ImageRenderCheck
+      </Link>
+
       <form name="contact" data-netlify="true">
-  <p>
-    <label>Name <input type="text" name="name" /></label>
-  </p>
-  <p>
-    <label>Email <input type="email" name="email" /></label>
-  </p>
-  <p>
-    <button type="submit">Send</button>
-  </p>
-</form>
-<form name="contact" data-netlify="true" hidden>
-  <p>
-    <label>Name <input type="text" name="name" /></label>
-  </p>
-  <p>
-    <label>Email <input type="email" name="email" /></label>
-  </p>
-  <p>
-    <button type="submit">Send</button>
-  </p>
-</form>
+        <p>
+          <label>Name <input type="text" name="name" /></label>
+        </p>
+        <p>
+          <label>Email <input type="email" name="email" /></label>
+        </p>
+        <p>
+          <button type="submit">Send</button>
+        </p>
+      </form>
+
       <Nav title="Netlify Workshop" />
       <section className="flex columns">
         <div>
