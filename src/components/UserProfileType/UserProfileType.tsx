@@ -21,7 +21,7 @@ export default function UserProfileType() {
                     <li> <i className="fa fa-check" aria-hidden="true"></i> 15 Free trips </li>
                     <li> <i className="fa fa-check" aria-hidden="true"></i> Email reminders </li>
                     <li> <i className="fa fa-check" aria-hidden="true"></i> Full LOB`s </li>
-                    <li> <i className="fa fa-times" aria-hidden="true"></i> Live Support </li>
+                    <li> <i className="fa fa-check" aria-hidden="true"></i> Live Support </li>
                   </ul>
                 </div>
                 <a href="#">Join now</a>
@@ -41,7 +41,7 @@ export default function UserProfileType() {
                   <li> <i className="fa fa-check" aria-hidden="true"></i> 30 Free trips </li>
                     <li> <i className="fa fa-check" aria-hidden="true"></i> Navan expense card </li>
                     <li> <i className="fa fa-check" aria-hidden="true"></i> Admin Dashboard </li>
-                    <li> <i className="fa fa-times" aria-hidden="true"></i> Live Support </li>
+                    <li> <i className="fa fa-check" aria-hidden="true"></i> Live Support </li>
                   </ul>
                 </div>
                 <a href="#">I`m in!</a>
@@ -61,7 +61,7 @@ export default function UserProfileType() {
                   <li> <i className="fa fa-check" aria-hidden="true"></i> Lots of benefits </li>
                     <li> <i className="fa fa-check" aria-hidden="true"></i> Travel Planner summary </li>
                     <li> <i className="fa fa-check" aria-hidden="true"></i> Admin Dashboard </li>
-                    <li> <i className="fa fa-times" aria-hidden="true"></i> Live Support </li>
+                    <li> <i className="fa fa-check" aria-hidden="true"></i> Live Support </li>
                   </ul>
                 </div>
                 <a href="#">Sign me up</a>
