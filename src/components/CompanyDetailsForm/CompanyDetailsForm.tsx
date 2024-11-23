@@ -39,7 +39,31 @@ export default function CompanyDetailsForm({ onData }: CompanyDetailsFormProps) 
     </div>
     <div className={styles['form-right']}>
       <form id="form" className={styles['form']}>
-        <div className={styles['form-control']}>
+
+        <div className={styles['row']}>
+          <span>
+            <input className={styles['balloon']} id="name" type="text" placeholder="First name" /><label htmlFor="name">First name</label>
+          </span>
+          <span>
+            <input className={styles['balloon']} id="last" type="text" placeholder="Last name" /><label htmlFor="last">Last name</label>
+          </span>
+          <span>
+            <input className={styles['balloon']} id="Email" type="text" placeholder="Email" /><label htmlFor="Email">Email</label>
+          </span>
+          <span>
+            <input className={styles['balloon']} id="Company" type="text" placeholder="Company" /><label htmlFor="Company">Company name
+            </label>
+          </span>
+          <span>
+            <input className={styles['balloon']} id="Password" type="text" placeholder="Password" /><label htmlFor="Password">Password
+            </label>
+          </span>
+          <span>
+            <input className={styles['balloon']} id="rePassword" type="text" placeholder="rePassword" /><label htmlFor="rePassword">Re Password
+            </label>
+          </span>
+        </div>
+        {/* <div className={styles['form-control']}>
           <label htmlFor="name">First name</label>
           <input
             type="text"
@@ -105,7 +129,7 @@ export default function CompanyDetailsForm({ onData }: CompanyDetailsFormProps) 
           <label htmlFor="checkbox">
             Get updates and notifications about our product
           </label>
-        </div>
+        </div> */}
         <button className={styles['btn']} id="btn" onClick={() => handleFormSubmit()}>
           Submit
         </button>
