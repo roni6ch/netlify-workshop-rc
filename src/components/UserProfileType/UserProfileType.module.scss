@@ -5,10 +5,8 @@
   border-radius: 15px;
   margin: 0 auto;
   padding: 40px 20px;
-  -webkit-box-shadow: 0 10px 15px rgba(0, 0, 0, .1);
   box-shadow: 0 10px 15px rgba(0, 0, 0, .1);
-  -webkit-transition: .5s;
-  transition: .5s;
+  z-index: 1;
 }
 
 .flex-container {
@@ -22,8 +20,8 @@
 }
 
 .card:hover {
-  -webkit-transform: scale(1.1);
   transform: scale(1.1);
+  transition: .5s;
 }
 
 .col-sm-4 {

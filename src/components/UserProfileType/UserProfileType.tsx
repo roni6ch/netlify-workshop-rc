@@ -1,13 +1,20 @@
 import styles from './UserProfileType.module.scss';
 
-export default function UserProfileType() {
+interface UserProfileTypeProps {
+  onData: (type: string) => void;
+}
 
+export default function UserProfileType({ onData }: UserProfileTypeProps) {
+  const handleCardClick = (type: string) => {
+    console.log(type);
+    onData('step-2');
+  };
   return (
     <div className={styles['container-wrapper']}>
       <div className={styles['container-fluid']}>
         <div className={styles['container']}>
           <div className={`${styles['flex-container']}`}>
-            <div className={`${styles['col-sm-4']}`}>
+            <div className={`${styles['col-sm-4']}`} onClick={() => handleCardClick('T')}>
               <div className={`${styles['card']}`}>
                 <div className={styles['title']}>
                   <i className="fa fa-paper-plane" aria-hidden="true"></i>
@@ -27,14 +34,14 @@ export default function UserProfileType() {
                 <a href="#">Join now</a>
               </div>
             </div>
-            <div className={styles['col-sm-4']}>
+            <div className={styles['col-sm-4']}  onClick={() => handleCardClick('TE')}>
               <div className={`${styles['card']} ${styles['text-center']}`}>
                 <div className={styles['title']}>
                   <i className="fa fa-plane" aria-hidden="true"></i>
                   <h2>Travel and Expense</h2>
                 </div>
                 <div className={styles['price']}>
-                  <h4><sup>$</sup>0</h4>
+                  <h4><sup>$</sup>50</h4>
                 </div>
                 <div className={styles['option']}>
                   <ul>
@@ -47,7 +54,7 @@ export default function UserProfileType() {
                 <a href="#">I`m in!</a>
               </div>
             </div>
-            <div className={styles['col-sm-4']}>
+            <div className={styles['col-sm-4']}  onClick={() => handleCardClick('BFO')}>
               <div className={`${styles['card']} ${styles['text-center']}`}>
                 <div className={styles['title']}>
                   <i className="fa fa-rocket" aria-hidden="true"></i>

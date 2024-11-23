@@ -1,0 +1,196 @@
+%flex-stack {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container {
+    background-color: #fff;
+    @extend %flex-stack;
+    border-radius: 5px;
+    padding: 1.6rem;
+    max-height: 600px;
+    box-shadow: 0 2px 20px #d4cae2;
+
+    .form-left {
+        background-image: linear-gradient(#b897e5, #6c58c7);
+        color: #fff;
+        padding: 2rem;
+        max-width: 375px;
+        height: 550px;
+        border-top-left-radius: 5px;
+        border-bottom-left-radius: 5px;
+
+        div {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 12px;
+            text-align: left;
+
+            i {
+                background-color: #C2A5EB;
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                @extend %flex-stack;
+                margin-bottom: -0.1rem;
+            }
+
+            h4 {
+                margin: 0;
+                font-size: 1.2rem;
+                font-weight: 700;
+            }
+
+            h5 {
+                font-weight: 600;
+                display: flex;
+            }
+        }
+        h5 {  
+            text-align: left;
+        }
+    }
+
+    .form-right {
+        z-index: 100;
+        max-width: 525px;
+        height: 550px;
+        text-align: left;
+        padding: 1rem 4rem;
+
+        h2 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            opacity: 0.9;
+        }
+
+        .form {
+            .form-control {
+                position: relative;
+
+                label {
+                    display: block;
+                    margin-bottom: 0.25rem;
+                    font-weight: 700;
+                    opacity: 0.9;
+                }
+
+                input {
+                    width: 100%;
+                    padding: 0.7rem 1rem;
+                    border: 2px solid #e8e7ec;
+                    outline: none;
+                    border-radius: 5px;
+                    display: block;
+                    margin-bottom: 0.5rem;
+                }
+
+                small {
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                    font-size: 0.9rem;
+                    display: none;
+                    font-weight: 600;
+                }
+            }
+
+            .form-control.error input {
+                border-color: #f00;
+            }
+
+            .form-control.error small {
+                display: block;
+                color: #f00;
+            }
+
+            .form-control.success input {
+                border-color: rgb(5, 192, 5);
+            }
+        }
+
+        .checkbox-control {
+            input {
+                outline: none;
+            }
+
+            label {
+                font-size: 0.9rem;
+                opacity: 0.9;
+                font-weight: 600;
+            }
+        }
+
+        .btn {
+            border: none;
+            outline: none;
+            width: 100%;
+            margin-top: 1.5rem;
+            background-color: #735FCD;
+            color: #fff;
+            font-weight: 700;
+            padding: 0.75rem 0;
+            border-radius: 5px;
+            transition: 0.3s ease all;
+            cursor: pointer;
+
+            &:hover {
+                background-color: #5844ad;
+            }
+        }
+    }
+}
+
+@media(max-width: 800px) {
+    .container {
+        .form-left {
+            max-width: 275px;
+
+            div {
+                h5 {
+                    width: 100%;
+                }
+            }
+        }
+
+        .form-right {
+            h2 {
+                text-align: center;
+            }
+
+            max-width: 400px;
+            padding: 3rem 0rem 3rem 3rem;
+        }
+    }
+}
+
+@media(max-width: 675px) {
+    .container {
+        .form-left {
+            display: none;
+            max-width: 275px;
+
+            div {
+                h5 {
+                    width: 100%;
+                }
+            }
+        }
+
+        .form-right {
+            max-width: 400px;
+            padding: 3rem 0;
+        }
+    }
+}
+
+@media(max-width: 400px) {
+    .container {
+        .form-right {
+            max-width: 250px;
+            padding: 2rem 0 3rem;
+        }
+    }
+}
