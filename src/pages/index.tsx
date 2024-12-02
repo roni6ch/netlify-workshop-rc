@@ -9,11 +9,6 @@ export default function Index() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [overlayActive, setOverlayActive] = useState(false);
 
-  const handleModalOpen = () => {
-    setIsModalVisible(true);
-    setOverlayActive(true);
-  };
-
   const handleModalClose = () => {
     setIsModalVisible(false);
     setOverlayActive(false);
@@ -30,7 +25,7 @@ export default function Index() {
         <Header />
         <div className="wrapper">
           <Sidebar />
-          <MainContainer onModalOpen={handleModalOpen} />
+          <MainContainer />
         </div>
         {isModalVisible && <PopUpModal onClose={handleModalClose} />}
       </div>

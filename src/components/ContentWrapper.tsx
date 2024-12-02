@@ -1,19 +1,18 @@
 // src/components/ContentWrapper.js
 import React from 'react';
 import AppsCard from './AppsCard';
-import AdobeProductList from './AdobeProductList';
 import Banner from './Banner';
+import Form from './Form';
 
-interface ContentWrapperProps {
-  onModalOpen: () => void;
-}
-
-function ContentWrapper({ onModalOpen }: ContentWrapperProps) {
+function ContentWrapper() {
   return (
     <div className="content-wrapper">
       <Banner />
-      <AdobeProductList onModalOpen={onModalOpen} />
       <AppsCard />
+      <Form />
+      <button className="content-button status-button main-cta">
+        Sign me up!
+      </button>
     </div>
   );
 }

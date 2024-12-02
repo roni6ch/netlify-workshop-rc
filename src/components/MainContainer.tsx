@@ -2,11 +2,7 @@
 import React, { useState } from 'react';
 import ContentWrapper from './ContentWrapper';
 
-interface MainContainerProps {
-  onModalOpen: () => void;
-}
-
-function MainContainer({ onModalOpen }: MainContainerProps) {
+function MainContainer() {
   const [activeHeaderLink, setActiveHeaderLink] = useState('Desktop');
 
   const handleHeaderLinkClick = (link: React.SetStateAction<string>) => {
@@ -43,7 +39,7 @@ function MainContainer({ onModalOpen }: MainContainerProps) {
           </a>
         </div>
       </div>
-      <ContentWrapper onModalOpen={onModalOpen} />
+      <ContentWrapper />
     </div>
   );
 }
