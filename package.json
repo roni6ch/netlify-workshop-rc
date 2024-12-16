@@ -8,12 +8,16 @@
     "start": "next start"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^6.7.1",
+    "@gsap/react": "^2.1.1",
     "@netlify/blobs": "^6.5.0",
     "@netlify/edge-functions": "^2.3.1",
     "@netlify/functions": "^2.6.0",
+    "gsap": "^3.12.5",
     "next": "^14.1.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "sass": "^1.81.0",
     "water.css": "^2.1.1"
   },
   "devDependencies": {
