@@ -133,7 +133,7 @@ export default function Welcome() {
             {!doneAnimation && <rect fill="#fff" width="100%" height="100%"></rect>}
             {doneAnimation && <><image
               className="background-image tracking-in-expand"
-              href="https://res.cloudinary.com/tripactions/image/upload/f_auto,q_auto/v1734333591/site/growth/test/home-process-bg-6.b96cda387f100369b0bb.jpg"
+              href="https://res.cloudinary.com/tripactions/image/upload/f_auto,q_22/v1734334720/site/growth/test/home-process-bg-6.b96cda387f100369b0bb_2.jpg"
               width="1200"
               height="800"
             />
