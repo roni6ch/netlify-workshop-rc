@@ -4,7 +4,6 @@ import ButtonGroup from '@mui/material/ButtonGroup';
 import TextField from '@mui/material/TextField';
 import { SetStateAction, useEffect } from 'react';
 import { useState } from 'react';
-import SaveIcon from '@mui/icons-material/Save';
 
 enum SignUpReason {
   TRAVEL_SOLUTION = "TRAVEL_SOLUTION",
@@ -13,6 +12,7 @@ enum SignUpReason {
   BOOK_FOR_OTHERS = "BOOK_FOR_OTHERS",
   BOOK_TRIP = "BOOK_TRIP",
 }
+
 
 export default function Index() {
   const [userName, setUserName] = useState('');

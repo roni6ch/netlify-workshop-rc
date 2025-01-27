@@ -1,8 +1,12 @@
+
+type Headers = { [key: string]: string };
+type Body = Record<string, string>;
+
 export default async (req: Request): Promise<Response> => {
   const url = new URL(req.url);
-  const signupReason = url.searchParams.get("signupReason");
-  const userName = url.searchParams.get("userName");
-  let TAtoken: string, userEmail: string, leadToken: any, userToken: string = '';
+  const signupReason = url.searchParams.get("signupReason") || '';
+  const userName = url.searchParams.get("userName") || '';
+  let TAtoken: string, userEmail: string, leadToken: string = '', userToken: string = '';
 
   if (!signupReason) {
     return new Response(
@@ -14,7 +18,7 @@ export default async (req: Request): Promise<Response> => {
     );
   }
 
-  async function makeRequest(url: string, method: string, headers: any, body: any = null) {
+  async function makeRequest(url: string, method: string, headers: Headers, body?: Body) {
     try {
       const response = await fetch(url, {
         method,
@@ -72,7 +76,7 @@ export default async (req: Request): Promise<Response> => {
 
   async function onboard() {
     const url = `https://staging-prime.navan.com/api/selfSell/onboard?token=${leadToken}`;
-    const body = {
+    const body: Body = {
       firstName: userName,
       lastName: 'TEST',
       leadPhoneNumber: '',
