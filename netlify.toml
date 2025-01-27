@@ -1,5 +1,7 @@
 [build]
-  command = "npm run build"
+  functions = "netlify/functions" # Path to your functions folder
 
-[images]
-  remote_images = ["https://github.com/.*"]
+[[redirects]]
+  from = "/api/actions"
+  to = "/.netlify/functions/actions" 
+  status = 200 

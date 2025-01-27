@@ -1,118 +1,96 @@
-import Link from "next/link";
 
-import Nav from "~/components/Nav";
+import Button from '@mui/material/Button';
+import ButtonGroup from '@mui/material/ButtonGroup';
+import TextField from '@mui/material/TextField';
+import { SetStateAction, useEffect } from 'react';
+import { useState } from 'react';
+import SaveIcon from '@mui/icons-material/Save';
+
+enum SignUpReason {
+  TRAVEL_SOLUTION = "TRAVEL_SOLUTION",
+  TRAVEL_AND_EXPENSE_SOLUTION = "TRAVEL_AND_EXPENSE_SOLUTION",
+  TEAM_OFFSITE = "TEAM_OFFSITE",
+  BOOK_FOR_OTHERS = "BOOK_FOR_OTHERS",
+  BOOK_TRIP = "BOOK_TRIP",
+}
 
 export default function Index() {
-  return (
-    <main>
-<form name="contact" method="POST" data-netlify="true">
-  <input type="hidden" name="form-name" value="contact" />
-  <p>
-    <label>Name <input type="text" name="name" /></label>
-  </p>
-  <p>
-    <label>Email <input type="email" name="email" /></label>
-  </p>
-  <p>
-    <button type="submit">Send</button>
-  </p>
-</form>
-<form name="contact" data-netlify="true" hidden>
-  <p>
-    <label>Name <input type="text" name="name" /></label>
-  </p>
-  <p>
-    <label>Email <input type="email" name="email" /></label>
-  </p>
-  <p>
-    <button type="submit">Send</button>
-  </p>
-</form>
-      <Nav title="Netlify Workshop" />
-      <section className="flex columns">
-        <div>
-          <h2>Rendering strategies</h2>
-          <ul>
-            <li>
-              <Link href="/rendering-strategies/ssg">
-                Static site generation (SSG)
-              </Link>
-            </li>
-            <li>
-              <Link href="/rendering-strategies/ssr">
-                Server-side rendering (SSR)
-              </Link>
-            </li>
-            <li>
-              <Link href="/rendering-strategies/swr">
-                Stale-while-revalidate (SWR)
-              </Link>
-            </li>
+  const [userName, setUserName] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [loadingStates, setLoadingStates] = useState<{ [key: string]: boolean }>({});
 
-            <li>
-              <Link href="/rendering-strategies/odr">
-                On-demand revalidation (ODR)
-              </Link>
-            </li>
-          </ul>
-          <h2>Redirects and rewrites</h2>
-          <ul>
-            <li>
-              <Link href="/redirect-example">Redirect example</Link>
-            </li>
-            <li>
-              <Link href="/preview-image">Rewrite example</Link>
-            </li>
-          </ul>
-        </div>
-        <div>
-          <h2>Core primitives examples</h2>
-          <h3>Functions</h3>
-          <ul>
-            <li>
-              <Link href="/primitives/functions/proxy">Proxy to APIs</Link>
-            </li>
-            <li>
-              <Link href="/primitives/functions/combine-and-filter">
-                Combine and filter API responses
-              </Link>
-            </li>
-            <li>
-              <Link href="/primitives/functions/streams">Streams</Link>
-            </li>
-          </ul>
-          <h3>Edge functions</h3>
-          <ul>
-            <li>
-              <Link href="/primitives/edge-functions/ab-testing">
-                A/B testing
-              </Link>
-            </li>
-            <li>
-              <Link href="/primitives/edge-functions/geolocation">
-                Geolocation
-              </Link>
-            </li>
-          </ul>
-          <h3>Blobs</h3>
-          <ul>
-            <li>
-              <Link href="/primitives/blobs/blobs">Access blob storage</Link>
-            </li>
-          </ul>
-          <h3>Image CDN</h3>
-          <ul>
-            <li>
-              <Link href="/primitives/image-cdn/same-origin">
-                Same-origin images
-              </Link>
-            </li>
-            <li>
-              <Link href="/primitives/image-cdn/remote">Remote images</Link>
-            </li>
-          </ul>
-        </div>
-      </section>
-    </main>
-  );
+  useEffect(() => {
+    const savedUsername = localStorage.getItem('userName');
+    setUserName(savedUsername || Math.random().toString(36).substring(2, 8));
+  }, []);
+
+  const handleUsernameChange = (event: { target: { value: SetStateAction<string>; }; }) => {
+    setUserName(event.target.value);
+  };
+
+  const handleSaveUsername = () => {
+    localStorage.setItem('userName', userName);
+  };
+
+  const handleApiCall = async (signupReason: SignUpReason) => {
+    try {
+      setIsLoading(true);
+      setLoadingStates(prevState => ({ ...prevState, [signupReason]: true }));
+      const response = await fetch(`/api/actions?signupReason=${signupReason}&userName=${userName}`);
+      const data = await response.json();
+      openPrimeUserWindow(data.userToken);
+      setLoadingStates(prevState => ({ ...prevState, [signupReason]: false }));
+      setIsLoading(false);
+    } catch (error) {
+      console.error("Error calling API:", error);
+    }
+  };
+
+  const openPrimeUserWindow = (userToken: string) => {
+    navigator.clipboard.writeText(userToken).then(() => {
+      window.open('https://staging-prime.navan.com/app/user2', '_blank');
+    }).catch(err => {
+      console.error('Unable to copy text', err);
+    });
+  };
+
+
+  const buttonDetails = [
+    { reason: SignUpReason.TRAVEL_SOLUTION, label: 'Travel' },
+    { reason: SignUpReason.TRAVEL_AND_EXPENSE_SOLUTION, label: 'Travel & Expense' },
+    { reason: SignUpReason.TEAM_OFFSITE, label: 'Group Travel' },
+    { reason: SignUpReason.BOOK_FOR_OTHERS, label: 'Book for Others' },
+    { reason: SignUpReason.BOOK_TRIP, label: 'Book a Trip' },
+  ];
+
+  return <>
+    <h1>Users Generator!</h1>
+    <hr />
+    <br />
+    <TextField
+      id="outlined-basic"
+      label="User"
+      variant="outlined"
+      value={userName}
+      onChange={handleUsernameChange}
+      onBlur={handleSaveUsername}
+    />
+    <br />
+    <br />
+    <ButtonGroup variant="contained">
+      <ButtonGroup variant="contained">
+        {buttonDetails.map(({ reason, label }) => (
+          <Button
+            key={reason}
+            onClick={() => handleApiCall(reason)}
+            loading={loadingStates[reason]}
+            loadingPosition="start"
+            disabled={isLoading && !loadingStates[reason]} 
+          >
+            {label}
+          </Button>
+        ))}
+      </ButtonGroup>
+    </ButtonGroup>
+  </>
 }
