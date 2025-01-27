@@ -38,6 +38,7 @@ export default function Index() {
       setLoadingStates(prevState => ({ ...prevState, [signupReason]: true }));
       const response = await fetch(`/api/actions?signupReason=${signupReason}&userName=${userName}`);
       const data = await response.json();
+      console.log(data.userEmail);
       openPrimeUserWindow(data.userToken);
       setLoadingStates(prevState => ({ ...prevState, [signupReason]: false }));
       setIsLoading(false);

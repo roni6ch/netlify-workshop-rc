@@ -6,7 +6,7 @@ export default async (req: Request): Promise<Response> => {
   const url = new URL(req.url);
   const signupReason = url.searchParams.get("signupReason") || '';
   const userName = url.searchParams.get("userName") || '';
-  let TAtoken: string, userEmail: string, leadToken: string = '', userToken: string = '';
+  let TAtoken: string = '', userEmail: string = '', leadToken: string = '', userToken: string = '';
 
   if (!signupReason) {
     return new Response(
@@ -112,6 +112,7 @@ export default async (req: Request): Promise<Response> => {
         statusCode: 200,
         message: `${signupReason} executed successfully!`,
         userToken,
+        userEmail,
       }),
       { headers: { "Content-Type": "application/json" } }
     );
