@@ -2,6 +2,11 @@
   functions = "netlify/functions" # Path to your functions folder
 
 [[redirects]]
-  from = "/api/actions"
-  to = "/.netlify/functions/actions" 
+  from = "/api/selfsell"
+  to = "/.netlify/functions/selfsell" 
+  status = 200 
+
+[[redirects]]
+  from = "/api/traditional"
+  to = "/.netlify/functions/traditional" 
   status = 200 

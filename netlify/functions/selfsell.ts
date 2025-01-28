@@ -105,7 +105,9 @@ export default async (req: Request): Promise<Response> => {
     await signup();
     await getLeadToken();
     await onboard();
-    await setAdminClaim();
+    if (signupReason !== 'BOOK_TRIP') {
+      await setAdminClaim();
+    }
 
     return new Response(
       JSON.stringify({
