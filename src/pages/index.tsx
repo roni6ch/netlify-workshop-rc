@@ -71,7 +71,7 @@ export default function Index() {
       const response = await fetch(`/api/traditional?accountSegment=${accountSegment}&accountType=${traditionalAccountType}&userName=${userName}&withAddress=${withAddress}`);
       const data = await response.json();
       console.log(data);
-      openPrimeUserWindow(data.loginToken);
+      loginRequest(data);
       setLoadingStates(prevState => ({ ...prevState, [accountSegment]: false }));
       setIsLoading(false);
     } catch (error) {
@@ -79,8 +79,25 @@ export default function Index() {
     }
   };
 
-  const openPrimeUserWindow = (loginToken: string) => {
-    navigator.clipboard.writeText(loginToken).then(() => {
+  const loginRequest = async ({ loginToken, email }: { loginToken: string, email: string }) => {
+    try {
+      const response = await fetch('https://staging-prime.navan.com/api/uaa/token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          "Authorization": "Basic " + btoa(`${email}:Trip@123`)
+        },
+      });
+      const { token } = await response.json();
+      console.log(token);
+      openPrimeUserWindow(token);
+    } catch (error) {
+      console.error("Error calling API:", error);
+    }
+  }
+
+  const openPrimeUserWindow = (token: string) => {
+    navigator.clipboard.writeText(token).then(() => {
       window.open('https://staging-prime.navan.com/app/user2', '_blank');
     }).catch(err => {
       console.error('Unable to copy text', err);
@@ -155,7 +172,7 @@ export default function Index() {
           onClick={() => setTraditionalAccountType(accountType)}
           variant={accountType === traditionalAccountType ? 'outlined' : 'contained'}
           disabled={isLoading}
-       >
+        >
           {label}
         </Button>
       ))}

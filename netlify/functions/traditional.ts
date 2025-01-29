@@ -1,3 +1,5 @@
+import { faker } from '@faker-js/faker';
+
 type Headers = { [key: string]: string };
 type Body = Record<string, any>;
 
@@ -7,18 +9,21 @@ export default async (req: Request): Promise<Response> => {
   const accountType = url.searchParams.get("accountType") || 'TRAVEL';
   const userName = url.searchParams.get("userName") || 'TEST';
   const withAddress = url.searchParams.get("withAddress");
-  let TAtoken: string = '', loginToken: string = '', companyDomain: string = '', companyUuid: string = '';
+  let TAtoken: string = '', loginToken: string = '', companyDomain: string = '', companyUuid: string = '', email: string = '';
 
-  async function makeRequest(url: string, method: string, headers: Headers, body?: Body) {
+  async function makeRequest(url: string, method: string, headers: Headers, body?: Body | null, isTextResponse?: boolean) {
     try {
       const response = await fetch(url, {
         method,
         headers,
-        body: body ? JSON.stringify(body) : null,
+        ...(body ? { body: JSON.stringify(body) } : {}),
       });
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
+      if (isTextResponse) {
+        return response.text();
+      } 
       return await response.json();
     } catch (error) {
       console.error('Error making request:', error);
@@ -26,17 +31,18 @@ export default async (req: Request): Promise<Response> => {
     }
   }
 
-  function getCommonHeaders(authToken: string, additionalHeaders = {}) {
+  function getCommonHeaders(authToken?: string, additionalHeaders = {}) {
     return {
-      'Authorization': `TripActions ${authToken}`,
+      ...(authToken ? { 'Authorization': `TripActions ${authToken}` } : {} ),
       'Content-Type': 'application/json',
       "Connection": "keep-alive",
       'accept': "*/*",
-      ...additionalHeaders
+       ...additionalHeaders
     };
   }
 
   async function loginWithAuthToken() {
+    console.log('--- loginWithAuthToken ---');
     const url = 'https://staging-prime.navan.com/api/uaa/token?isSA=true';
     const username = 'svc-qa-jenkins@tripactions.com';
     const password = process.env.SA_P;
@@ -49,9 +55,11 @@ export default async (req: Request): Promise<Response> => {
   }
 
   async function createCompany() {
+    console.log('--- createCompany ---');
     const randomId = Math.random().toString(36).substring(2, 8);
-    companyDomain = `${accountSegment.toLowerCase()}${randomId}.xyz`;
-    const email = `${userName}-traditional-${randomId}@${companyDomain}`;
+    const companyName = `${accountSegment.toLowerCase()}${randomId}`;
+    companyDomain = `${companyName}.xyz`;
+    email = `${userName}-generator-traditional-${randomId}@${companyDomain}`;
     const familyName = 'TEST';
     const userUuid = "2b5651af-a8b5-4389-b80e-191266858a5c";
     const body = {
@@ -61,7 +69,7 @@ export default async (req: Request): Promise<Response> => {
       launchManager: userUuid,
       accountSegment,
       accountType,
-      companyName: randomId,
+      companyName,
       companyDomain,
       admin: {
         email,
@@ -89,6 +97,7 @@ export default async (req: Request): Promise<Response> => {
   }
 
   async function launchCompany() {
+    console.log('--- launchCompany ---');
     const body = {
       companyUuid,
       billableEntityCountryCode: 'US',
@@ -99,7 +108,7 @@ export default async (req: Request): Promise<Response> => {
       associateAgency: false,
       isComtravoOnboarding: false,
       admin: {
-        email: `${userName}@${companyDomain}`,
+        email,
         givenName: userName,
         familyName: 'TEST',
       },
@@ -109,12 +118,32 @@ export default async (req: Request): Promise<Response> => {
   }
 
   async function setupUser() {
-    const email = `${userName}@${companyDomain}`;
-    console.log(companyUuid);
-    console.log(email);
+    console.log('--- setupUser ---');
     const signUpTokenUrl = `https://staging-prime.navan.com/api/superAdmin/signupToken?email=${email}`;
-    const signupToken = await makeRequest(signUpTokenUrl, 'GET', getCommonHeaders(TAtoken));
-    console.log(signupToken);
+    loginToken = await makeRequest(signUpTokenUrl, 'GET', getCommonHeaders(TAtoken), null, true);
+  }
+
+  async function createAccount() {
+    console.log('--- createAccount ---');
+    const familyName = faker.person.lastName().replace(/'/g, '');
+    const givenName = faker.person.firstName();
+    const body = {
+      emailVerificationToken: loginToken,
+      email,
+      password: 'Trip@123',
+      passenger: {
+        birthdate: '1920-01-01',
+        familyName,
+        givenName
+      },
+      familyName,
+      givenName
+    }
+    console.log('companyUuid', companyUuid);
+    console.log('email', email);
+    const signUpTokenUrl = `https://staging-prime.navan.com/api/signup`;
+    const x = await makeRequest(signUpTokenUrl, 'POST', getCommonHeaders(), body, true);
+    console.log(x);
   }
 
   try {
@@ -122,13 +151,14 @@ export default async (req: Request): Promise<Response> => {
     await createCompany();
     await launchCompany();
     await setupUser();
+    await createAccount();
 
     return new Response(
       JSON.stringify({
         statusCode: 200,
         message: 'Account successfully created!',
         loginToken,
-        companyDomain,
+        email,
       }),
       { headers: { "Content-Type": "application/json" } }
     );
