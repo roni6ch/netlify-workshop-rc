@@ -1,9 +1,11 @@
 
+import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormGroup from '@mui/material/FormGroup';
+import Switch from '@mui/material/Switch';
 import TextField from '@mui/material/TextField';
 import { SetStateAction, useEffect } from 'react';
 import { useState } from 'react';
@@ -29,6 +31,7 @@ enum CompanyAccountType {
 }
 
 export default function Index() {
+  const [token, setToken] = useState('');
   const [userName, setUserName] = useState('');
   const [traditionalAccountType, setTraditionalAccountType] = useState(CompanyAccountType.TRAVEL_AND_LIQUID);
   const [isLoading, setIsLoading] = useState(false);
@@ -56,6 +59,7 @@ export default function Index() {
       const data = await response.json();
       console.log(data.userToken);
       console.log(data.userEmail);
+      setToken(data.userToken);
       openPrimeUserWindow(data.userToken);
       setLoadingStates(prevState => ({ ...prevState, [signupReason]: false }));
       setIsLoading(false);
@@ -90,6 +94,7 @@ export default function Index() {
       });
       const { token } = await response.json();
       console.log(token);
+      setToken(token);
       openPrimeUserWindow(token);
     } catch (error) {
       console.error("Error calling API:", error);
@@ -101,6 +106,7 @@ export default function Index() {
       window.open('https://staging-prime.navan.com/app/user2', '_blank');
     }).catch(err => {
       console.error('Unable to copy text', err);
+      window.open('https://staging-prime.navan.com/app/user2', '_blank');
     });
   };
 
@@ -162,7 +168,7 @@ export default function Index() {
     <h3>Traditional</h3>
 
     <FormGroup>
-      <FormControlLabel control={<Checkbox defaultChecked />} label="With Address?" onChange={prevState => setWithAddress(!prevState)} />
+      <FormControlLabel control={<Switch defaultChecked />} label="With Address?" onChange={prevState => setWithAddress(!prevState)} />
     </FormGroup>
     <h6>Account Type</h6>
     <ButtonGroup variant="contained">
@@ -192,5 +198,17 @@ export default function Index() {
         </Button>
       ))}
     </ButtonGroup>
+    <br /> <br />
+    {token && <Box
+      sx={() => ({
+        p: 1,
+        border: '1px solid',
+        borderColor: 'grey.300',
+        borderRadius: 2,
+
+      })}
+    >
+      {token}
+    </Box>}
   </>
 }

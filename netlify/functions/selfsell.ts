@@ -59,7 +59,7 @@ export default async (req: Request): Promise<Response> => {
 
   async function signup() {
     const random = Math.random().toString(36).substring(2, 8);
-    userEmail = `${userName}@ss${random}.com`;
+    userEmail = `${userName}-generator@ss${random}.com`;
     const body = {
       email: userEmail,
       accountType: 'TRAVEL'
