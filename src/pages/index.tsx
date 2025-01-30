@@ -9,6 +9,8 @@ import TextField from '@mui/material/TextField';
 import { SetStateAction, useEffect } from 'react';
 import { useState } from 'react';
 
+export const ENV = 'https://staging-prime.navan.com';
+
 enum SignUpReason {
   TRAVEL_SOLUTION = "TRAVEL_SOLUTION",
   TRAVEL_AND_EXPENSE_SOLUTION = "TRAVEL_AND_EXPENSE_SOLUTION",
@@ -41,7 +43,7 @@ export default function Index() {
 
   const checkSplitView = async (user: string) => {
     try {
-      const response = await fetch(`https://staging-prime.navan.com/api/splits/GROWTH_DEBUG_VIEW?userEmail=${user}`);
+      const response = await fetch(`${ENV}/api/splits/GROWTH_DEBUG_VIEW?userEmail=${user}`);
       const data = await response.json();
       setIsEligible(data.enabled);
       setInitiated(true);
@@ -68,7 +70,7 @@ export default function Index() {
     try {
       setIsLoading(true);
       setLoadingStates(prevState => ({ ...prevState, [signupReason]: true }));
-      const response = await fetch(`/api/selfsell?signupReason=${signupReason}&userName=${userName}`);
+      const response = await fetch(`${ENV}/api/selfsell?signupReason=${signupReason}&userName=${userName}`);
       const data = await response.json();
       console.log(data.userToken);
       console.log(data.userEmail);
@@ -85,7 +87,7 @@ export default function Index() {
     try {
       setIsLoading(true);
       setLoadingStates(prevState => ({ ...prevState, [accountSegment]: true }));
-      const response = await fetch(`/api/traditional?accountSegment=${accountSegment}&accountType=${traditionalAccountType}&userName=${userName}&withAddress=${withAddress}`);
+      const response = await fetch(`${ENV}/api/traditional?accountSegment=${accountSegment}&accountType=${traditionalAccountType}&userName=${userName}&withAddress=${withAddress}`);
       const data = await response.json();
       console.log(data);
       loginRequest(data);
@@ -98,7 +100,7 @@ export default function Index() {
 
   const loginRequest = async ({ email }: { email: string }) => {
     try {
-      const response = await fetch('https://staging-prime.navan.com/api/uaa/token', {
+      const response = await fetch(`${ENV}/api/uaa/token`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -116,10 +118,10 @@ export default function Index() {
 
   const openPrimeUserWindow = (token: string) => {
     navigator.clipboard.writeText(token).then(() => {
-      window.open('https://staging-prime.navan.com/app/user2', '_blank');
+      window.open(`${ENV}/app/user2`, '_blank');
     }).catch(err => {
       console.error('Unable to copy text', err);
-      window.open('https://staging-prime.navan.com/app/user2', '_blank');
+      window.open(`${ENV}/app/user2`, '_blank');
     });
   };
 

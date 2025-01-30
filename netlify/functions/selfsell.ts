@@ -24,7 +24,7 @@ export default async (req: Request): Promise<Response> => {
   }
 
   async function loginWithAuthToken() {
-    const url = 'https://staging-prime.navan.com/api/uaa/token?isSA=true';
+    const url = '/api/uaa/token?isSA=true';
     const username = 'svc-qa-jenkins@tripactions.com';
     const password = process.env.SA_P;
     const headers = {
@@ -42,18 +42,18 @@ export default async (req: Request): Promise<Response> => {
       email: userEmail,
       accountType: 'TRAVEL'
     };
-    const url = 'https://staging-prime.navan.com/api/selfSell/lead/signup';
+    const url = '/api/selfSell/lead/signup';
     await makeRequest(url, 'POST', getCommonHeaders(TAtoken), body);
   }
 
   async function getLeadToken() {
-    const url = `https://staging-prime.navan.com/api/selfSell/automation/lead/email/${userEmail}`;
+    const url = `/api/selfSell/automation/lead/email/${userEmail}`;
     const { selfSellToken } = await makeRequest(url, 'GET', getCommonHeaders(TAtoken));
     leadToken = selfSellToken;
   }
 
   async function onboard() {
-    const url = `https://staging-prime.navan.com/api/selfSell/onboard?token=${leadToken}`;
+    const url = `/api/selfSell/onboard?token=${leadToken}`;
     const body = {
       firstName: userName,
       lastName: 'TEST',
@@ -68,11 +68,11 @@ export default async (req: Request): Promise<Response> => {
   }
 
   async function setAdminClaim() {
-    const url = `https://staging-prime.navan.com/api/selfSell/company/onboard`;
+    const url = `/api/selfSell/company/onboard`;
     const headers = {
       ...getCommonHeaders(userToken),
       'X-tripactions-locale': 'en-US',
-      'Referer': 'https://staging-prime.navan.com/app/user2/welcome-to-navan'
+      'Referer': '/app/user2/welcome-to-navan'
     };
     const { token } = await makeRequest(url, 'POST', headers);
     userToken = token;
