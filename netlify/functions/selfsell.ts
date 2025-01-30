@@ -1,6 +1,5 @@
+import { getCommonHeaders, makeRequest } from "./util";
 
-type Headers = { [key: string]: string };
-type Body = Record<string, string>;
 enum SignUpReason {
   TRAVEL_SOLUTION = "TRAVEL_SOLUTION",
   TRAVEL_AND_EXPENSE_SOLUTION = "TRAVEL_AND_EXPENSE_SOLUTION",
@@ -23,33 +22,6 @@ export default async (req: Request): Promise<Response> => {
       { headers: { "Content-Type": "application/json" } }
     );
   }
-
-  async function makeRequest(url: string, method: string, headers: Headers, body?: Body) {
-    try {
-      const response = await fetch(url, {
-        method,
-        headers,
-        body: body ? JSON.stringify(body) : null,
-      });
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      return await response.json();
-    } catch (error) {
-      console.error('Error making request:', error);
-      throw error;
-    }
-  }
-
-  function getCommonHeaders(authToken: string, additionalHeaders = {}) {
-    return {
-      'Authorization': `TripActions ${authToken}`,
-      'Content-Type': 'application/json',
-      'accept': "application/json",
-      ...additionalHeaders
-    };
-  }
-
 
   async function loginWithAuthToken() {
     const url = 'https://staging-prime.navan.com/api/uaa/token?isSA=true';
@@ -82,7 +54,7 @@ export default async (req: Request): Promise<Response> => {
 
   async function onboard() {
     const url = `https://staging-prime.navan.com/api/selfSell/onboard?token=${leadToken}`;
-    const body: Body = {
+    const body = {
       firstName: userName,
       lastName: 'TEST',
       leadPhoneNumber: '',
