@@ -1,5 +1,3 @@
-import { faker } from '@faker-js/faker';
-
 type Headers = { [key: string]: string };
 type Body = Record<string, any>;
 
@@ -7,8 +5,10 @@ export default async (req: Request): Promise<Response> => {
   const url = new URL(req.url);
   const accountSegment = url.searchParams.get("accountSegment") || 'COMMERCIAL';
   const accountType = url.searchParams.get("accountType") || 'TRAVEL';
-  const userName = url.searchParams.get("userName") || 'TEST';
+  const givenName = url.searchParams.get("userName") || 'TEST';
   const withAddress = url.searchParams.get("withAddress");
+  const randomId = Math.random().toString(36).substring(2, 8);
+  const familyName = randomId;
   let TAtoken: string = '', loginToken: string = '', companyDomain: string = '', companyUuid: string = '', email: string = '';
 
   async function makeRequest(url: string, method: string, headers: Headers, body?: Body | null, isTextResponse?: boolean) {
@@ -59,8 +59,7 @@ export default async (req: Request): Promise<Response> => {
     const randomId = Math.random().toString(36).substring(2, 8);
     const companyName = `${accountSegment.toLowerCase()}${randomId}`;
     companyDomain = `${companyName}.xyz`;
-    email = `${userName}-generator-traditional-${randomId}@${companyDomain}`;
-    const familyName = 'TEST';
+    email = `${givenName}-generator-traditional-${randomId}@${companyDomain}`;
     const userUuid = "2b5651af-a8b5-4389-b80e-191266858a5c";
     const body = {
       category: 'COMMERCIAL',
@@ -74,7 +73,7 @@ export default async (req: Request): Promise<Response> => {
       admin: {
         email,
         familyName,
-        givenName: userName,
+        givenName,
       },
       isLHGCustomer: false,
       lhgPriceModel: 'free',
@@ -109,8 +108,8 @@ export default async (req: Request): Promise<Response> => {
       isComtravoOnboarding: false,
       admin: {
         email,
-        givenName: userName,
-        familyName: 'TEST',
+        givenName,
+        familyName,
       },
     };
     const url = 'https://staging-prime.navan.com/api/superAdmin/selfonboarding/v2/confirm';
@@ -125,8 +124,6 @@ export default async (req: Request): Promise<Response> => {
 
   async function createAccount() {
     console.log('--- createAccount ---');
-    const familyName = faker.person.lastName().replace(/'/g, '');
-    const givenName = faker.person.firstName();
     const body = {
       emailVerificationToken: loginToken,
       email,

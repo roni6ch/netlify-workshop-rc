@@ -10,7 +10,6 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
-    "@faker-js/faker": "^9.4.0",
     "@fontsource/roboto": "^5.1.1",
     "@mui/icons-material": "^6.4.1",
     "@mui/material": "^6.4.1",
@@ -26,7 +25,6 @@
   },
   "devDependencies": {
     "@netlify/plugin-nextjs": "^5.0.0-rc.4",
-    "@types/faker": "^6.6.11",
     "@types/node": "^18.11.5",
     "@types/react": "^18.0.23",
     "@types/react-dom": "^18.0.7",
