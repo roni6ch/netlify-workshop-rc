@@ -17,6 +17,8 @@ export default async (req: Request): Promise<Response> => {
         headers,
         ...(body ? { body: JSON.stringify(body) } : {}),
       });
+      console.log(response);
+      
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }

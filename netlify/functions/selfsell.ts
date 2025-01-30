@@ -1,7 +1,13 @@
 
 type Headers = { [key: string]: string };
 type Body = Record<string, string>;
-
+enum SignUpReason {
+  TRAVEL_SOLUTION = "TRAVEL_SOLUTION",
+  TRAVEL_AND_EXPENSE_SOLUTION = "TRAVEL_AND_EXPENSE_SOLUTION",
+  TEAM_OFFSITE = "TEAM_OFFSITE",
+  BOOK_FOR_OTHERS = "BOOK_FOR_OTHERS",
+  BOOK_TRIP = "BOOK_TRIP",
+}
 export default async (req: Request): Promise<Response> => {
   const url = new URL(req.url);
   const signupReason = url.searchParams.get("signupReason") || '';
@@ -105,7 +111,7 @@ export default async (req: Request): Promise<Response> => {
     await signup();
     await getLeadToken();
     await onboard();
-    if (signupReason !== 'BOOK_TRIP') {
+    if ([SignUpReason.TRAVEL_SOLUTION, SignUpReason.TRAVEL_AND_EXPENSE_SOLUTION].includes(signupReason as SignUpReason)) {
       await setAdminClaim();
     }
 
