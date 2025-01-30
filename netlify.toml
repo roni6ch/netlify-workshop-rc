@@ -1,5 +1,12 @@
 [build]
-  command = "npm run build"
+  functions = "netlify/functions" # Path to your functions folder
 
-[images]
-  remote_images = ["https://github.com/.*"]
+[[redirects]]
+  from = "/api/selfsell"
+  to = "/.netlify/functions/selfsell" 
+  status = 200 
+
+[[redirects]]
+  from = "/api/traditional"
+  to = "/.netlify/functions/traditional" 
+  status = 200 
