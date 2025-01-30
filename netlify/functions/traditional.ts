@@ -7,8 +7,7 @@ export default async (req: Request): Promise<Response> => {
   const accountType = url.searchParams.get("accountType") || 'TRAVEL';
   const givenName = url.searchParams.get("userName") || 'TEST';
   const withAddress = url.searchParams.get("withAddress");
-  const randomId = Math.random().toString(36).substring(2, 8);
-  const familyName = randomId;
+  const familyName = 'TEST';
   let TAtoken: string = '', loginToken: string = '', companyDomain: string = '', companyUuid: string = '', email: string = '';
 
   async function makeRequest(url: string, method: string, headers: Headers, body?: Body | null, isTextResponse?: boolean) {
