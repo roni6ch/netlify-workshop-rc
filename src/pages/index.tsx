@@ -2,7 +2,6 @@
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
-import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormGroup from '@mui/material/FormGroup';
 import Switch from '@mui/material/Switch';
@@ -83,7 +82,7 @@ export default function Index() {
     }
   };
 
-  const loginRequest = async ({ loginToken, email }: { loginToken: string, email: string }) => {
+  const loginRequest = async ({ email }: {  email: string }) => {
     try {
       const response = await fetch('https://staging-prime.navan.com/api/uaa/token', {
         method: 'POST',
