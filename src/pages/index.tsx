@@ -9,6 +9,8 @@ import TextField from '@mui/material/TextField';
 import { SetStateAction, useEffect } from 'react';
 import { useState } from 'react';
 
+export const ENV = 'https://staging-prime.navan.com';
+
 enum SignUpReason {
   TRAVEL_SOLUTION = "TRAVEL_SOLUTION",
   TRAVEL_AND_EXPENSE_SOLUTION = "TRAVEL_AND_EXPENSE_SOLUTION",
@@ -33,13 +35,27 @@ export default function Index() {
   const [token, setToken] = useState('');
   const [userName, setUserName] = useState('');
   const [traditionalAccountType, setTraditionalAccountType] = useState(CompanyAccountType.TRAVEL_AND_LIQUID);
+  const [initiated, setInitiated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isEligible, setIsEligible] = useState(false);
   const [withAddress, setWithAddress] = useState(true);
   const [loadingStates, setLoadingStates] = useState<{ [key: string]: boolean }>({});
 
+  const checkSplitView = async (user: string) => {
+    try {
+      const response = await fetch(`${ENV}/api/splits/GROWTH_DEBUG_VIEW?userEmail=${user}`);
+      const data = await response.json();
+      setIsEligible(data.enabled);
+      setInitiated(true);
+    } catch (error) {
+      console.error("Error calling API:", error);
+    }
+  };
+
   useEffect(() => {
-    const savedUsername = localStorage.getItem('userName');
-    setUserName(savedUsername || Math.random().toString(36).substring(2, 8));
+    const user = localStorage.getItem('userName') || Math.random().toString(36).substring(2, 8);
+    setUserName(user);
+    checkSplitView(user);
   }, []);
 
   const handleUsernameChange = (event: { target: { value: SetStateAction<string>; }; }) => {
@@ -54,7 +70,7 @@ export default function Index() {
     try {
       setIsLoading(true);
       setLoadingStates(prevState => ({ ...prevState, [signupReason]: true }));
-      const response = await fetch(`/api/selfsell?signupReason=${signupReason}&userName=${userName}`);
+      const response = await fetch(`${ENV}/api/selfsell?signupReason=${signupReason}&userName=${userName}`);
       const data = await response.json();
       console.log(data.userToken);
       console.log(data.userEmail);
@@ -71,7 +87,7 @@ export default function Index() {
     try {
       setIsLoading(true);
       setLoadingStates(prevState => ({ ...prevState, [accountSegment]: true }));
-      const response = await fetch(`/api/traditional?accountSegment=${accountSegment}&accountType=${traditionalAccountType}&userName=${userName}&withAddress=${withAddress}`);
+      const response = await fetch(`${ENV}/api/traditional?accountSegment=${accountSegment}&accountType=${traditionalAccountType}&userName=${userName}&withAddress=${withAddress}`);
       const data = await response.json();
       console.log(data);
       loginRequest(data);
@@ -82,9 +98,9 @@ export default function Index() {
     }
   };
 
-  const loginRequest = async ({ email }: {  email: string }) => {
+  const loginRequest = async ({ email }: { email: string }) => {
     try {
-      const response = await fetch('https://staging-prime.navan.com/api/uaa/token', {
+      const response = await fetch(`${ENV}/api/uaa/token`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -102,10 +118,10 @@ export default function Index() {
 
   const openPrimeUserWindow = (token: string) => {
     navigator.clipboard.writeText(token).then(() => {
-      window.open('https://staging-prime.navan.com/app/user2', '_blank');
+      window.open(`${ENV}/app/user2`, '_blank');
     }).catch(err => {
       console.error('Unable to copy text', err);
-      window.open('https://staging-prime.navan.com/app/user2', '_blank');
+      window.open(`${ENV}/app/user2`, '_blank');
     });
   };
 
@@ -133,81 +149,86 @@ export default function Index() {
   ];
 
   return <>
-    <h1>Users Generator!</h1>
-    <hr />
-    <br />
-    <TextField
-      id="outlined-basic"
-      label="User"
-      variant="outlined"
-      value={userName}
-      onChange={handleUsernameChange}
-      onBlur={handleSaveUsername}
-    />
-    <br />
-    <br />
-    <h3>Self sell</h3>
-    <ButtonGroup variant="contained">
-      {selfSellSignupCompanies.map(({ reason, label }) => (
-        <Button
-          key={reason}
-          onClick={() => handleSelfSellApiCall(reason)}
-          loading={loadingStates[reason]}
-          loadingPosition="start"
-          disabled={isLoading && !loadingStates[reason]}
+    {initiated && <>
+      {!isEligible && 'Please type your username'}
+      <h1>Users Generator!</h1>
+      <hr />
+      <br />
+      <TextField
+        id="outlined-basic"
+        label="User"
+        variant="outlined"
+        value={userName}
+        onChange={handleUsernameChange}
+        onBlur={handleSaveUsername}
+      />
+      {isEligible && <>
+        <br />
+        <br />
+        <h3>Self sell</h3>
+        <ButtonGroup variant="contained">
+          {selfSellSignupCompanies.map(({ reason, label }) => (
+            <Button
+              key={reason}
+              onClick={() => handleSelfSellApiCall(reason)}
+              loading={loadingStates[reason]}
+              loadingPosition="start"
+              disabled={isLoading && !loadingStates[reason]}
+            >
+              {label}
+            </Button>
+          ))}
+        </ButtonGroup>
+
+        <br />
+        <br />
+        <hr />
+        <h3>Traditional</h3>
+
+        <FormGroup>
+          <FormControlLabel control={<Switch defaultChecked />} label="With Address?" onChange={prevState => setWithAddress(!prevState)} />
+        </FormGroup>
+        <h6>Account Type</h6>
+        <ButtonGroup variant="contained">
+          {traditionalAccountTypes.map(({ accountType, label }) => (
+            <Button
+              key={accountType}
+              onClick={() => setTraditionalAccountType(accountType)}
+              variant={accountType === traditionalAccountType ? 'outlined' : 'contained'}
+              disabled={isLoading}
+            >
+              {label}
+            </Button>
+          ))}
+        </ButtonGroup>
+
+        <h6>Account Segment</h6>
+        <ButtonGroup variant="contained">
+          {traditionalSignupCompanies.map(({ accountSegment, label }) => (
+            <Button
+              key={accountSegment}
+              onClick={() => handleTraditionalApiCall(accountSegment)}
+              loading={loadingStates[accountSegment]}
+              loadingPosition="start"
+              disabled={isLoading && !loadingStates[accountSegment]}
+            >
+              {label}
+            </Button>
+          ))}
+        </ButtonGroup>
+        <br /> <br />
+        {token && <Box
+          sx={() => ({
+            p: 1,
+            border: '1px solid',
+            borderColor: 'grey.300',
+            borderRadius: 2,
+
+          })}
         >
-          {label}
-        </Button>
-      ))}
-    </ButtonGroup>
-
-    <br />
-    <br />
-    <hr />
-    <h3>Traditional</h3>
-
-    <FormGroup>
-      <FormControlLabel control={<Switch defaultChecked />} label="With Address?" onChange={prevState => setWithAddress(!prevState)} />
-    </FormGroup>
-    <h6>Account Type</h6>
-    <ButtonGroup variant="contained">
-      {traditionalAccountTypes.map(({ accountType, label }) => (
-        <Button
-          key={accountType}
-          onClick={() => setTraditionalAccountType(accountType)}
-          variant={accountType === traditionalAccountType ? 'outlined' : 'contained'}
-          disabled={isLoading}
-        >
-          {label}
-        </Button>
-      ))}
-    </ButtonGroup>
-
-    <h6>Account Segment</h6>
-    <ButtonGroup variant="contained">
-      {traditionalSignupCompanies.map(({ accountSegment, label }) => (
-        <Button
-          key={accountSegment}
-          onClick={() => handleTraditionalApiCall(accountSegment)}
-          loading={loadingStates[accountSegment]}
-          loadingPosition="start"
-          disabled={isLoading && !loadingStates[accountSegment]}
-        >
-          {label}
-        </Button>
-      ))}
-    </ButtonGroup>
-    <br /> <br />
-    {token && <Box
-      sx={() => ({
-        p: 1,
-        border: '1px solid',
-        borderColor: 'grey.300',
-        borderRadius: 2,
-
-      })}
-    >
-      {token}
-    </Box>}
+          {token}
+        </Box>}
+      </>}
+    </>}
   </>
 }

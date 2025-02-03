@@ -1,7 +1,12 @@
+import { getCommonHeaders, makeRequest } from "./util";
 
-type Headers = { [key: string]: string };
-type Body = Record<string, string>;
-
+enum SignUpReason {
+  TRAVEL_SOLUTION = "TRAVEL_SOLUTION",
+  TRAVEL_AND_EXPENSE_SOLUTION = "TRAVEL_AND_EXPENSE_SOLUTION",
+  TEAM_OFFSITE = "TEAM_OFFSITE",
+  BOOK_FOR_OTHERS = "BOOK_FOR_OTHERS",
+  BOOK_TRIP = "BOOK_TRIP",
+}
 export default async (req: Request): Promise<Response> => {
   const url = new URL(req.url);
   const signupReason = url.searchParams.get("signupReason") || '';
@@ -18,35 +23,8 @@ export default async (req: Request): Promise<Response> => {
     );
   }
 
-  async function makeRequest(url: string, method: string, headers: Headers, body?: Body) {
-    try {
-      const response = await fetch(url, {
-        method,
-        headers,
-        body: body ? JSON.stringify(body) : null,
-      });
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      return await response.json();
-    } catch (error) {
-      console.error('Error making request:', error);
-      throw error;
-    }
-  }
-
-  function getCommonHeaders(authToken: string, additionalHeaders = {}) {
-    return {
-      'Authorization': `TripActions ${authToken}`,
-      'Content-Type': 'application/json',
-      'accept': "application/json",
-      ...additionalHeaders
-    };
-  }
-
-
   async function loginWithAuthToken() {
-    const url = 'https://staging-prime.navan.com/api/uaa/token?isSA=true';
+    const url = '/api/uaa/token?isSA=true';
     const username = 'svc-qa-jenkins@tripactions.com';
     const password = process.env.SA_P;
     const headers = {
@@ -64,19 +42,19 @@ export default async (req: Request): Promise<Response> => {
       email: userEmail,
       accountType: 'TRAVEL'
     };
-    const url = 'https://staging-prime.navan.com/api/selfSell/lead/signup';
+    const url = '/api/selfSell/lead/signup';
     await makeRequest(url, 'POST', getCommonHeaders(TAtoken), body);
   }
 
   async function getLeadToken() {
-    const url = `https://staging-prime.navan.com/api/selfSell/automation/lead/email/${userEmail}`;
+    const url = `/api/selfSell/automation/lead/email/${userEmail}`;
     const { selfSellToken } = await makeRequest(url, 'GET', getCommonHeaders(TAtoken));
     leadToken = selfSellToken;
   }
 
   async function onboard() {
-    const url = `https://staging-prime.navan.com/api/selfSell/onboard?token=${leadToken}`;
-    const body: Body = {
+    const url = `/api/selfSell/onboard?token=${leadToken}`;
+    const body = {
       firstName: userName,
       lastName: 'TEST',
       leadPhoneNumber: '',
@@ -90,11 +68,11 @@ export default async (req: Request): Promise<Response> => {
   }
 
   async function setAdminClaim() {
-    const url = `https://staging-prime.navan.com/api/selfSell/company/onboard`;
+    const url = `/api/selfSell/company/onboard`;
     const headers = {
       ...getCommonHeaders(userToken),
       'X-tripactions-locale': 'en-US',
-      'Referer': 'https://staging-prime.navan.com/app/user2/welcome-to-navan'
+      'Referer': '/app/user2/welcome-to-navan'
     };
     const { token } = await makeRequest(url, 'POST', headers);
     userToken = token;
@@ -105,7 +83,7 @@ export default async (req: Request): Promise<Response> => {
     await signup();
     await getLeadToken();
     await onboard();
-    if (signupReason !== 'BOOK_TRIP') {
+    if ([SignUpReason.TRAVEL_SOLUTION, SignUpReason.TRAVEL_AND_EXPENSE_SOLUTION].includes(signupReason as SignUpReason)) {
       await setAdminClaim();
     }
 

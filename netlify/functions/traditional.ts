@@ -1,5 +1,4 @@
-type Headers = { [key: string]: string };
-type Body = Record<string, any>;
+import { getCommonHeaders, makeRequest } from "./util";
 
 export default async (req: Request): Promise<Response> => {
   const url = new URL(req.url);
@@ -10,39 +9,9 @@ export default async (req: Request): Promise<Response> => {
   const familyName = 'TEST';
   let TAtoken: string = '', loginToken: string = '', companyDomain: string = '', companyUuid: string = '', email: string = '';
 
-  async function makeRequest(url: string, method: string, headers: Headers, body?: Body | null, isTextResponse?: boolean) {
-    try {
-      const response = await fetch(url, {
-        method,
-        headers,
-        ...(body ? { body: JSON.stringify(body) } : {}),
-      });
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      if (isTextResponse) {
-        return response.text();
-      } 
-      return await response.json();
-    } catch (error) {
-      console.error('Error making request:', error);
-      throw error;
-    }
-  }
-
-  function getCommonHeaders(authToken?: string, additionalHeaders = {}) {
-    return {
-      ...(authToken ? { 'Authorization': `TripActions ${authToken}` } : {} ),
-      'Content-Type': 'application/json',
-      "Connection": "keep-alive",
-      'accept': "*/*",
-       ...additionalHeaders
-    };
-  }
-
   async function loginWithAuthToken() {
     console.log('--- loginWithAuthToken ---');
-    const url = 'https://staging-prime.navan.com/api/uaa/token?isSA=true';
+    const url = '/api/uaa/token?isSA=true';
     const username = 'svc-qa-jenkins@tripactions.com';
     const password = process.env.SA_P;
     const headers = {
@@ -89,7 +58,7 @@ export default async (req: Request): Promise<Response> => {
       })
     };
 
-    const url = 'https://staging-prime.navan.com/api/superAdmin/selfonboarding/v2/company';
+    const url = '/api/superAdmin/selfonboarding/v2/company';
     const data = await makeRequest(url, 'POST', getCommonHeaders(TAtoken), body);
     companyUuid = data.company.uuid;
   }
@@ -111,13 +80,13 @@ export default async (req: Request): Promise<Response> => {
         familyName,
       },
     };
-    const url = 'https://staging-prime.navan.com/api/superAdmin/selfonboarding/v2/confirm';
+    const url = '/api/superAdmin/selfonboarding/v2/confirm';
     await makeRequest(url, 'PUT', getCommonHeaders(TAtoken), body);
   }
 
   async function setupUser() {
     console.log('--- setupUser ---');
-    const signUpTokenUrl = `https://staging-prime.navan.com/api/superAdmin/signupToken?email=${email}`;
+    const signUpTokenUrl = `/api/superAdmin/signupToken?email=${email}`;
     loginToken = await makeRequest(signUpTokenUrl, 'GET', getCommonHeaders(TAtoken), null, true);
   }
 
@@ -137,7 +106,7 @@ export default async (req: Request): Promise<Response> => {
     }
     console.log('companyUuid', companyUuid);
     console.log('email', email);
-    const signUpTokenUrl = `https://staging-prime.navan.com/api/signup`;
+    const signUpTokenUrl = `/api/signup`;
     const x = await makeRequest(signUpTokenUrl, 'POST', getCommonHeaders(), body, true);
     console.log(x);
   }
