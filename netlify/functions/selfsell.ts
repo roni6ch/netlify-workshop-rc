@@ -1,12 +1,5 @@
-import { getCommonHeaders, makeRequest } from "./util";
+import { getCommonHeaders, loginWithAuthToken, makeRequest } from "./util";
 
-enum SignUpReason {
-  TRAVEL_SOLUTION = "TRAVEL_SOLUTION",
-  TRAVEL_AND_EXPENSE_SOLUTION = "TRAVEL_AND_EXPENSE_SOLUTION",
-  TEAM_OFFSITE = "TEAM_OFFSITE",
-  BOOK_FOR_OTHERS = "BOOK_FOR_OTHERS",
-  BOOK_TRIP = "BOOK_TRIP",
-}
 export default async (req: Request): Promise<Response> => {
   const url = new URL(req.url);
   const signupReason = url.searchParams.get("signupReason") || '';
@@ -22,20 +15,7 @@ export default async (req: Request): Promise<Response> => {
       { headers: { "Content-Type": "application/json" } }
     );
   }
-
-  async function loginWithAuthToken() {
-    console.log('-- loginWithAuthToken --');
-    const url = '/api/uaa/token?isSA=true';
-    const username = 'svc-qa-jenkins@tripactions.com';
-    const password = process.env.SA_P;
-    const headers = {
-      'Authorization': 'Basic ' + btoa(username + ':' + password),
-      'Content-Type': 'application/json'
-    };
-    const data = await makeRequest(url, 'POST', headers);
-    TAtoken = data.token;
-  }
-
+  
   async function signup() {
     console.log('-- signup --');
     const random = Math.random().toString(36).substring(2, 8);
@@ -72,7 +52,7 @@ export default async (req: Request): Promise<Response> => {
   }
 
   try {
-    await loginWithAuthToken();
+    TAtoken = await loginWithAuthToken();
     await signup();
     await getLeadToken();
     await onboard();
