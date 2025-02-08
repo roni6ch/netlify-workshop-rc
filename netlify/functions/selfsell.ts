@@ -24,6 +24,7 @@ export default async (req: Request): Promise<Response> => {
   }
 
   async function loginWithAuthToken() {
+    console.log('-- loginWithAuthToken --');
     const url = '/api/uaa/token?isSA=true';
     const username = 'svc-qa-jenkins@tripactions.com';
     const password = process.env.SA_P;
@@ -36,6 +37,7 @@ export default async (req: Request): Promise<Response> => {
   }
 
   async function signup() {
+    console.log('-- signup --');
     const random = Math.random().toString(36).substring(2, 8);
     userEmail = `${userName}-generator@ss${random}.com`;
     const body = {
@@ -47,12 +49,14 @@ export default async (req: Request): Promise<Response> => {
   }
 
   async function getLeadToken() {
+    console.log('-- getLeadToken --');
     const url = `/api/selfSell/automation/lead/email/${userEmail}`;
     const { selfSellToken } = await makeRequest(url, 'GET', getCommonHeaders(TAtoken));
     leadToken = selfSellToken;
   }
 
   async function onboard() {
+    console.log('-- onboard --');
     const url = `/api/selfSell/onboard?token=${leadToken}`;
     const body = {
       firstName: userName,
@@ -63,19 +67,8 @@ export default async (req: Request): Promise<Response> => {
       accountType: signupReason === 'TRAVEL_AND_EXPENSE_SOLUTION' ? 'TRAVEL_AND_LIQUID' : 'TRAVEL',
       signupReason
     };
-    const { token } = await makeRequest(url, 'POST', getCommonHeaders(TAtoken), body);
-    userToken = token;
-  }
-
-  async function setAdminClaim() {
-    const url = `/api/selfSell/company/onboard`;
-    const headers = {
-      ...getCommonHeaders(userToken),
-      'X-tripactions-locale': 'en-US',
-      'Referer': '/app/user2/welcome-to-navan'
-    };
-    const { token } = await makeRequest(url, 'POST', headers);
-    userToken = token;
+    const data = await makeRequest(url, 'POST', getCommonHeaders(TAtoken), body);
+    userToken = data.token;
   }
 
   try {
@@ -83,9 +76,6 @@ export default async (req: Request): Promise<Response> => {
     await signup();
     await getLeadToken();
     await onboard();
-    if ([SignUpReason.TRAVEL_SOLUTION, SignUpReason.TRAVEL_AND_EXPENSE_SOLUTION].includes(signupReason as SignUpReason)) {
-      await setAdminClaim();
-    }
 
     return new Response(
       JSON.stringify({
@@ -96,12 +86,12 @@ export default async (req: Request): Promise<Response> => {
       }),
       { headers: { "Content-Type": "application/json" } }
     );
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error in action flow:', error);
     return new Response(
       JSON.stringify({
         statusCode: 500,
-        message: 'Error processing the request',
+        message: error?.message || 'Internal server error',
       }),
       { headers: { "Content-Type": "application/json" } }
     );
