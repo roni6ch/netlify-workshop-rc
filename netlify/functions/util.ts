@@ -1,16 +1,19 @@
 export const ENV = 'https://staging-prime.navan.com';
+export const PROD_ENV = 'https://app.navan.com';
 
 type Headers = { [key: string]: string };
 type Body = Record<string, any>;
 
-export async function makeRequest(url: string, method: string, headers: Headers, body?: Body | null, isTextResponse?: boolean) {
+export async function makeRequest(url: string, method: string, headers: Headers, body?: Body | null, isTextResponse?: boolean, isProd?: boolean) {
     try {
-      const response = await fetch(ENV + url, {
+      const fullUrl = isProd ? PROD_ENV + url : ENV + url;
+      console.log(fullUrl);
+      
+      const response = await fetch(fullUrl, {
         method,
         headers,
         ...(body ? { body: JSON.stringify(body) } : {}),
       });
-      console.log(response);
       
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -34,4 +37,16 @@ export async function makeRequest(url: string, method: string, headers: Headers,
       'accept': "*/*",
        ...additionalHeaders
     };
+  }
+
+  export async function loginWithAuthToken() {
+    const url = '/api/uaa/token?isSA=true';
+    const username = 'svc-qa-jenkins@tripactions.com';
+    const password = process.env.SA_P;
+    const headers = {
+      'Authorization': 'Basic ' + btoa(username + ':' + password),
+      'Content-Type': 'application/json'
+    };
+    const data = await makeRequest(url, 'POST', headers);
+    return data.token;
   }

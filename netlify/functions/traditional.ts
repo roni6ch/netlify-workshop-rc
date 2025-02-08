@@ -1,4 +1,4 @@
-import { getCommonHeaders, makeRequest } from "./util";
+import { getCommonHeaders, loginWithAuthToken, makeRequest } from "./util";
 
 export default async (req: Request): Promise<Response> => {
   const url = new URL(req.url);
@@ -8,19 +8,6 @@ export default async (req: Request): Promise<Response> => {
   const withAddress = url.searchParams.get("withAddress");
   const familyName = 'TEST';
   let TAtoken: string = '', loginToken: string = '', companyDomain: string = '', companyUuid: string = '', email: string = '';
-
-  async function loginWithAuthToken() {
-    console.log('--- loginWithAuthToken ---');
-    const url = '/api/uaa/token?isSA=true';
-    const username = 'svc-qa-jenkins@tripactions.com';
-    const password = process.env.SA_P;
-    const headers = {
-      'Authorization': 'Basic ' + btoa(username + ':' + password),
-      'Content-Type': 'application/json'
-    };
-    const data = await makeRequest(url, 'POST', headers);
-    TAtoken = data.token;
-  }
 
   async function createCompany() {
     console.log('--- createCompany ---');
@@ -112,7 +99,7 @@ export default async (req: Request): Promise<Response> => {
   }
 
   try {
-    await loginWithAuthToken();
+    TAtoken = await loginWithAuthToken();
     await createCompany();
     await launchCompany();
     await setupUser();
