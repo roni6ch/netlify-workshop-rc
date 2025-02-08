@@ -89,4 +89,4 @@ export default function CompanyInfo() {
             {loading && <CircularProgress size={24} />}
         </div>
     );
-};
+}

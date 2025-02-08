@@ -1,6 +1,6 @@
 import { Box, TextField, Button, CircularProgress, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 import React, { useState } from "react";
-import { AccountType, ENV, OnboardingCategory, OnboardingGuides, TaskId } from "~/assets/onboardingGuide.util";
+import { AccountType, ENV, OnboardingCategory, OnboardingGuides } from "~/assets/onboardingGuide.util";
 
 export default function OnboardingGuide() {
     const [userToken, setUserToken] = useState('');
