@@ -11,7 +11,7 @@ export default function OnboardingGuide() {
         try {
             if (userToken) {
                 setLoading(true);
-                const response = await fetch(`${ENV}/api/onboardingGuide?token=${userToken}`);
+                const response = await fetch(`/api/onboardingGuide?token=${userToken}`);
                 const { data } = await response.json();
                 setOnboardingGuide(data);
             }
@@ -38,15 +38,15 @@ export default function OnboardingGuide() {
                         </TableHead>
                         <TableBody>
                             {categories?.[0]?.tasks?.flatMap((task) =>
-                                (task?.subTasks && task.subTasks.length > 0 ? task.subTasks : [task])?.map((subTask) => (
+                                (task?.subTasks && task.subTasks.length > 0 ? task?.subTasks : [task])?.map((subTask) => (
                                     <TableRow key={subTask.id} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
-                                        <TableCell component="th" scope="row">{subTask.id}</TableCell>
-                                        <TableCell>{subTask.title || task.title}</TableCell>
-                                        <TableCell>{subTask.state || task.state}</TableCell>
+                                        <TableCell component="th" scope="row">{subTask?.id}</TableCell>
+                                        <TableCell>{subTask?.title || task?.title}</TableCell>
+                                        <TableCell>{subTask?.state || task?.state}</TableCell>
                                         <TableCell>
                                             <Button
-                                                onClick={() => handleCTAClick(subTask.id, selectedAccountType)}
-                                                disabled={subTask.state === "COMPLETED" || loading}
+                                                onClick={() => handleCTAClick(subTask?.id, selectedAccountType)}
+                                                disabled={subTask?.state === "COMPLETED" || loading}
                                             >
                                                 Complete
                                             </Button>
@@ -116,20 +116,20 @@ export default function OnboardingGuide() {
                 </Button>
             </Box>
             <br /><hr />
-            {(onboardingGuide?.companyOnboardingGuide || onboardingGuide.userOnboardingGuide) && <>
+            {(onboardingGuide?.companyOnboardingGuide || onboardingGuide?.userOnboardingGuide) && <>
                 <div>
-                    {!!onboardingGuide.companyOnboardingGuide?.categories && (
+                    {!!onboardingGuide?.companyOnboardingGuide?.categories && (
                         <OnboardingGuideTable
                             title="Company Onboarding Guide"
                             selectedAccountType={AccountType.COMPANY}
-                            categories={onboardingGuide.companyOnboardingGuide.categories}
+                            categories={onboardingGuide?.companyOnboardingGuide?.categories}
                         />
                     )}
                     {!!onboardingGuide.userOnboardingGuide?.categories && (
                         <OnboardingGuideTable
                             title="User Onboarding Guide"
                             selectedAccountType={AccountType.USER}
-                            categories={onboardingGuide.userOnboardingGuide.categories}
+                            categories={onboardingGuide?.userOnboardingGuide?.categories}
                         />
                     )}
                 </div>
