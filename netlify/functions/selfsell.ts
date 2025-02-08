@@ -1,5 +1,13 @@
 import { getCommonHeaders, loginWithAuthToken, makeRequest } from "./util";
 
+enum SignUpReasonMapper {
+  TRAVEL_SOLUTION = "T",
+  TRAVEL_AND_EXPENSE_SOLUTION = "TE",
+  TEAM_OFFSITE = "GROUP",
+  BOOK_FOR_OTHERS = "DELEGATE",
+  BOOK_TRIP = "ROUGH",
+}
+
 export default async (req: Request): Promise<Response> => {
   const url = new URL(req.url);
   const signupReason = url.searchParams.get("signupReason") || '';
@@ -15,23 +23,24 @@ export default async (req: Request): Promise<Response> => {
       { headers: { "Content-Type": "application/json" } }
     );
   }
-  
   async function signup() {
     console.log('-- signup --');
     const random = Math.random().toString(36).substring(2, 8);
-    userEmail = `${userName}-generator@ss${random}.com`;
+    const signupResonMapper = SignUpReasonMapper[signupReason as keyof typeof SignUpReasonMapper];
+    userEmail = `${userName}-generator@ss${random}-${signupResonMapper}.com`;
+    console.log(userEmail);
     const body = {
       email: userEmail,
       accountType: 'TRAVEL'
     };
     const url = '/api/selfSell/lead/signup';
-    await makeRequest(url, 'POST', getCommonHeaders(TAtoken), body);
+    await makeRequest({ url, method: 'POST', headers: getCommonHeaders(TAtoken), body });
   }
 
   async function getLeadToken() {
     console.log('-- getLeadToken --');
     const url = `/api/selfSell/automation/lead/email/${userEmail}`;
-    const { selfSellToken } = await makeRequest(url, 'GET', getCommonHeaders(TAtoken));
+    const { selfSellToken } = await makeRequest({ url, method: 'GET', headers: getCommonHeaders(TAtoken) });
     leadToken = selfSellToken;
   }
 
@@ -47,7 +56,7 @@ export default async (req: Request): Promise<Response> => {
       accountType: signupReason === 'TRAVEL_AND_EXPENSE_SOLUTION' ? 'TRAVEL_AND_LIQUID' : 'TRAVEL',
       signupReason
     };
-    const data = await makeRequest(url, 'POST', getCommonHeaders(TAtoken), body);
+    const data = await makeRequest({ url, method: 'POST', headers: getCommonHeaders(TAtoken), body });
     userToken = data.token;
   }
 
@@ -62,7 +71,7 @@ export default async (req: Request): Promise<Response> => {
         statusCode: 200,
         message: `${signupReason} executed successfully!`,
         userToken,
-        userEmail,
+        email: userEmail,
       }),
       { headers: { "Content-Type": "application/json" } }
     );

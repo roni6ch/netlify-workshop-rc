@@ -46,7 +46,7 @@ export default async (req: Request): Promise<Response> => {
     };
 
     const url = '/api/superAdmin/selfonboarding/v2/company';
-    const data = await makeRequest(url, 'POST', getCommonHeaders(TAtoken), body);
+    const data = await makeRequest({ url, method: 'POST', headers: getCommonHeaders(TAtoken), body });
     companyUuid = data.company.uuid;
   }
 
@@ -68,13 +68,13 @@ export default async (req: Request): Promise<Response> => {
       },
     };
     const url = '/api/superAdmin/selfonboarding/v2/confirm';
-    await makeRequest(url, 'PUT', getCommonHeaders(TAtoken), body);
+    await makeRequest({ url, method: 'PUT', headers: getCommonHeaders(TAtoken), body });
   }
 
   async function setupUser() {
     console.log('--- setupUser ---');
-    const signUpTokenUrl = `/api/superAdmin/signupToken?email=${email}`;
-    loginToken = await makeRequest(signUpTokenUrl, 'GET', getCommonHeaders(TAtoken), null, true);
+    const url = `/api/superAdmin/signupToken?email=${email}`;
+    loginToken = await makeRequest({ url, method: 'GET', headers: getCommonHeaders(TAtoken), body: null, isTextResponse: true });
   }
 
   async function createAccount() {
@@ -93,9 +93,9 @@ export default async (req: Request): Promise<Response> => {
     }
     console.log('companyUuid', companyUuid);
     console.log('email', email);
-    const signUpTokenUrl = `/api/signup`;
-    const x = await makeRequest(signUpTokenUrl, 'POST', getCommonHeaders(), body, true);
-    console.log(x);
+    const url = `/api/signup`;
+    const signupResponse = await makeRequest({ url, method: 'POST', headers: getCommonHeaders(), body, isTextResponse: true });
+    console.log(signupResponse);
   }
 
   try {
@@ -114,12 +114,12 @@ export default async (req: Request): Promise<Response> => {
       }),
       { headers: { "Content-Type": "application/json" } }
     );
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error in account creation flow:', error);
     return new Response(
       JSON.stringify({
         statusCode: 500,
-        message: 'Error processing the request',
+        message: error?.message || 'Error processing the request',
       }),
       { headers: { "Content-Type": "application/json" } }
     );

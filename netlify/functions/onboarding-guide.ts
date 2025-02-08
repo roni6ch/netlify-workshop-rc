@@ -1,24 +1,22 @@
-import { getCommonHeaders, loginWithAuthToken, makeRequest } from "./util";
+import { getCommonHeaders, makeRequest } from "./util";
 
 export default async (req: Request): Promise<Response> => {
     const url = new URL(req.url);
-    const companyUuid = url.searchParams.get("companyUuid") || '';
-    let TAtoken: string = '';
+    const token = url.searchParams.get("token") || '';
 
-    async function getCompanyInfo() {
-        const url = `/api/superAdmin/selfonboarding/v2/params?companyUuid=${companyUuid}`;
-        const data = await makeRequest({ url, method: 'GET', headers: getCommonHeaders(TAtoken), body: null });
+    async function getOG() {
+        const url = `/api/selfSetup/onboardingGuides`;
+        const data = await makeRequest({ url, method: 'GET', headers: getCommonHeaders(token) });
         console.log(data);
         return data;
     }
 
     try {
-        TAtoken = await loginWithAuthToken();
-        const data = await getCompanyInfo();
+        const data = await getOG();
         return new Response(
             JSON.stringify({
                 statusCode: 200,
-                message: `${companyUuid} executed successfully!`,
+                message: `executed successfully!`,
                 data,
             }),
             { headers: { "Content-Type": "application/json" } }
