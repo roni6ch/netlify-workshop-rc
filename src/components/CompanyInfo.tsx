@@ -5,7 +5,6 @@ export default function CompanyInfo() {
     const [companyUuid, setCompanyUuid] = useState('');
     const [companyInfo, setCompanyInfo] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [isProd, setIsProd] = useState(false);
 
     const keysToDisplay = [
         "dateCreated",
@@ -28,7 +27,7 @@ export default function CompanyInfo() {
         try {
             if (companyUuid) {
                 setLoading(true);
-                const response = await fetch(`/api/companyInfo?companyUuid=${companyUuid}&isProd=${isProd}`);
+                const response = await fetch(`/api/companyInfo?companyUuid=${companyUuid}`);
                 const { data } = await response.json();
                 setCompanyInfo(data?.company);
             }
@@ -89,4 +88,4 @@ export default function CompanyInfo() {
             {loading && <CircularProgress size={24} />}
         </div>
     );
-};
+}

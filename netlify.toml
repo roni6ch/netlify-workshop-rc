@@ -15,3 +15,8 @@
   from = "/api/companyInfo"
   to = "/.netlify/functions/company-info" 
   status = 200 
+
+  [[redirects]]
+  from = "/api/onboardingGuide"
+  to = "/.netlify/functions/onboarding-guide" 
+  status = 200 

@@ -5,6 +5,7 @@ import Box from '@mui/material/Box';
 import Users from '~/components/Users';
 import CompanyInfo from '~/components/CompanyInfo';
 import { useState } from 'react';
+import OnboardingGuide from '~/components/OnboardingGuide';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -35,12 +36,13 @@ export default function BasicTabs() {
     setValue(newValue);
   };
 
-  return (
+  return (<>
     <Box sx={{ width: '100%' }}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={value} onChange={handleChange}>
           <Tab label="Users" />
           <Tab label="Company Info" />
+          <Tab label="Onboarding Guide" />
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
@@ -49,6 +51,9 @@ export default function BasicTabs() {
       <CustomTabPanel value={value} index={1}>
         {isEligible && <CompanyInfo />}
       </CustomTabPanel>
-    </Box>
+      <CustomTabPanel value={value} index={2}>
+        {isEligible && <OnboardingGuide />}
+      </CustomTabPanel>
+    </Box></>
   );
 }

@@ -1,6 +1,6 @@
 
+import { Chip, CircularProgress, Stack, Button } from '@mui/material';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormGroup from '@mui/material/FormGroup';
@@ -9,6 +9,8 @@ import TextField from '@mui/material/TextField';
 import { ENV } from 'netlify/functions/util';
 import { SetStateAction, useEffect } from 'react';
 import { useState } from 'react';
+import SendIcon from '@mui/icons-material/Send';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
 
 enum SignUpReason {
@@ -40,6 +42,7 @@ export default function Users({ onEligibleChange }: UsersProps) {
   const [userName, setUserName] = useState('');
   const [traditionalAccountType, setTraditionalAccountType] = useState(CompanyAccountType.TRAVEL_AND_LIQUID);
   const [initiated, setInitiated] = useState(false);
+  const [response, setResponse] = useState({ email: '' });
   const [isLoading, setIsLoading] = useState(false);
   const [isEligible, setIsEligible] = useState(false);
   const [withAddress, setWithAddress] = useState(true);
@@ -50,6 +53,7 @@ export default function Users({ onEligibleChange }: UsersProps) {
       const response = await fetch(`${ENV}/api/splits/GROWTH_DEBUG_VIEW?userEmail=${user}`);
       const data = await response.json();
       setIsEligible(data.enabled);
+      // setIsEligible(true);
       onEligibleChange(data.enabled);
       setInitiated(true);
     } catch (error) {
@@ -63,12 +67,9 @@ export default function Users({ onEligibleChange }: UsersProps) {
     checkSplitView(user);
   }, []);
 
-  const handleUsernameChange = (event: { target: { value: SetStateAction<string>; }; }) => {
+  const handleUsernameChange = async (event: { target: { value: SetStateAction<string>; }; }) => {
     setUserName(event.target.value);
-  };
-
-  const handleSaveUsername = () => {
-    localStorage.setItem('userName', userName);
+    localStorage.setItem('userName', event.target.value as string || '');
   };
 
   const handleSelfSellApiCall = async (signupReason: SignUpReason) => {
@@ -78,9 +79,9 @@ export default function Users({ onEligibleChange }: UsersProps) {
       const response = await fetch(`/api/selfsell?signupReason=${signupReason}&userName=${userName}`);
       const data = await response.json();
       console.log(data.userToken);
-      console.log(data.userEmail);
+      console.log(data.email);
+      setResponse(data);
       setToken(data.userToken);
-      openPrimeUserWindow(data.userToken);
       setLoadingStates(prevState => ({ ...prevState, [signupReason]: false }));
       setIsLoading(false);
     } catch (error) {
@@ -95,6 +96,7 @@ export default function Users({ onEligibleChange }: UsersProps) {
       const response = await fetch(`/api/traditional?accountSegment=${accountSegment}&accountType=${traditionalAccountType}&userName=${userName}&withAddress=${withAddress}`);
       const data = await response.json();
       console.log(data);
+      setResponse(data);
       loginRequest(data);
       setLoadingStates(prevState => ({ ...prevState, [accountSegment]: false }));
       setIsLoading(false);
@@ -115,19 +117,27 @@ export default function Users({ onEligibleChange }: UsersProps) {
       const { token } = await response.json();
       console.log(token);
       setToken(token);
-      openPrimeUserWindow(token);
     } catch (error) {
       console.error("Error calling API:", error);
     }
   }
 
-  const openPrimeUserWindow = (token: string) => {
-    navigator.clipboard.writeText(token).then(() => {
+  const copyToKeyboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch (error) {
+      console.error("Error copying to clipboard:", error);
+    }
+  };
+
+  const openPrimeUserWindow = async () => {
+    try {
+      await copyToKeyboard(token);
       window.open(`${ENV}/app/user2`, '_blank');
-    }).catch(err => {
-      console.error('Unable to copy text', err);
+    } catch (error) {
+      console.error("Error copying to clipboard:", error);
       window.open(`${ENV}/app/user2`, '_blank');
-    });
+    }
   };
 
 
@@ -158,14 +168,24 @@ export default function Users({ onEligibleChange }: UsersProps) {
       <h1>Staging Prime - Users Generator!</h1>
       <hr />
       <br />
-      <TextField
-        id="outlined-basic"
-        label="User"
-        variant="outlined"
-        value={userName}
-        onChange={handleUsernameChange}
-        onBlur={handleSaveUsername}
-      />
+      <Box display="flex" alignItems="center" gap={2}>
+        <TextField
+          id="outlined-basic"
+          label="User"
+          variant="outlined"
+          value={userName}
+          onChange={handleUsernameChange}
+        />
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => checkSplitView(userName)}
+          disabled={isLoading}
+        >
+          {isLoading ? <CircularProgress size={24} /> : "Submit"}
+        </Button>
+      </Box>
+
       {isEligible && <>
         <br />
         <br />
@@ -190,13 +210,15 @@ export default function Users({ onEligibleChange }: UsersProps) {
         <h3>Traditional</h3>
 
         <FormGroup>
-          <FormControlLabel control={<Switch />} label="With Address?" checked={withAddress} onChange={e => setWithAddress((e.target as HTMLInputElement).checked)} />
+          <FormControlLabel control={<Switch />} label="With Address?" disabled={isLoading} checked={withAddress} onChange={e => setWithAddress((e.target as HTMLInputElement).checked)} />
         </FormGroup>
         <h6>Account Type</h6>
         <ButtonGroup variant="contained">
           {traditionalAccountTypes.map(({ accountType, label }) => (
             <Button
               key={accountType}
+              size="small"
+              color="secondary"
               onClick={() => setTraditionalAccountType(accountType)}
               variant={accountType === traditionalAccountType ? 'outlined' : 'contained'}
               disabled={isLoading}
@@ -221,16 +243,39 @@ export default function Users({ onEligibleChange }: UsersProps) {
           ))}
         </ButtonGroup>
         <br /> <br />
-        {token && <Box
-          sx={() => ({
-            p: 1,
-            border: '1px solid',
-            borderColor: 'grey.300',
-            borderRadius: 2,
-
-          })}
-        >
-          {token}
+        <hr />
+        {response?.email &&
+          <Box display="flex" alignItems="center" gap={2}>
+            Email <Stack direction="row" spacing={1}>
+              <Chip label={response?.email} />
+            </Stack>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => copyToKeyboard(response?.email)}
+              endIcon={<ContentCopyIcon />}
+            >
+              Copy
+            </Button>
+          </Box>
+        }
+        <br />
+        {token && <Box display="flex" alignItems="center" gap={2}>
+          Token
+          <Stack direction="row" spacing={1} sx={() => ({
+            borderRadius: 1,
+            width: '45%',
+          })}>
+            <Chip label={token} />
+          </Stack>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => openPrimeUserWindow()}
+            endIcon={<SendIcon />}
+          >
+            Copy + prime!
+          </Button>
         </Box>}
       </>}
     </>}
