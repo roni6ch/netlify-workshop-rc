@@ -23,7 +23,6 @@ export default async (req: Request): Promise<Response> => {
       { headers: { "Content-Type": "application/json" } }
     );
   }
-
   async function signup() {
     console.log('-- signup --');
     const random = Math.random().toString(36).substring(2, 8);

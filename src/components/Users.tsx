@@ -53,7 +53,6 @@ export default function Users({ onEligibleChange }: UsersProps) {
       const response = await fetch(`${ENV}/api/splits/GROWTH_DEBUG_VIEW?userEmail=${user}`);
       const data = await response.json();
       setIsEligible(data.enabled);
-      // setIsEligible(true);
       onEligibleChange(data.enabled);
       setInitiated(true);
     } catch (error) {

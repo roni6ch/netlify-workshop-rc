@@ -27,6 +27,7 @@ export default function CompanyInfo() {
         try {
             if (companyUuid) {
                 setLoading(true);
+
                 const response = await fetch(`/api/companyInfo?companyUuid=${companyUuid}`);
                 const { data } = await response.json();
                 setCompanyInfo(data?.company);
@@ -88,4 +89,4 @@ export default function CompanyInfo() {
             {loading && <CircularProgress size={24} />}
         </div>
     );
-}
+};
