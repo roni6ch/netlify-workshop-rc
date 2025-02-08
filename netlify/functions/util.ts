@@ -1,15 +1,11 @@
 export const ENV = 'https://staging-prime.navan.com';
-export const PROD_ENV = 'https://app.navan.com';
 
 type Headers = { [key: string]: string };
 type Body = Record<string, any>;
 
 export async function makeRequest(url: string, method: string, headers: Headers, body?: Body | null, isTextResponse?: boolean, isProd?: boolean) {
     try {
-      const fullUrl = isProd ? PROD_ENV + url : ENV + url;
-      console.log(fullUrl);
-      
-      const response = await fetch(fullUrl, {
+      const response = await fetch(ENV + url, {
         method,
         headers,
         ...(body ? { body: JSON.stringify(body) } : {}),
