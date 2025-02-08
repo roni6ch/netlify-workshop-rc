@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, Button, CircularProgress, Box } from "@mui/material";
+import { ENV } from "netlify/functions/util";
 
 export default function CompanyInfo() {
     const [companyUuid, setCompanyUuid] = useState('');
@@ -28,7 +29,7 @@ export default function CompanyInfo() {
             if (companyUuid) {
                 setLoading(true);
 
-                const response = await fetch(`/api/companyInfo?companyUuid=${companyUuid}`);
+                const response = await fetch(`${ENV}/api/companyInfo?companyUuid=${companyUuid}`);
                 const { data } = await response.json();
                 setCompanyInfo(data?.company);
             }

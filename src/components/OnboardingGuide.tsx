@@ -11,7 +11,7 @@ export default function OnboardingGuide() {
         try {
             if (userToken) {
                 setLoading(true);
-                const response = await fetch(`/api/onboardingGuide?token=${userToken}`);
+                const response = await fetch(`${ENV}/api/onboardingGuide?token=${userToken}`);
                 const { data } = await response.json();
                 setOnboardingGuide(data);
             }
