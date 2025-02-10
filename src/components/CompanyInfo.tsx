@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, Button, CircularProgress, Box } from "@mui/material";
-import { ENV } from "netlify/functions/util";
 
 export default function CompanyInfo() {
     const [companyUuid, setCompanyUuid] = useState('');
