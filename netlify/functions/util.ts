@@ -30,7 +30,6 @@ export async function makeRequest({
       console.log('-- isTextResponse --', response.text());
       return response.text();
     }
-    console.log('-- isTextResponse --', await response.json());
     return await response.json();
   } catch (error) {
     console.error('Error making request:', error);
