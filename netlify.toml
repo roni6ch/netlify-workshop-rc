@@ -18,6 +18,7 @@
   force = true
 
 [[redirects]]
-  from = "/api/onboardingGuide"
+  from = "/api/onboarding-guide"
   to = "/.netlify/functions/onboarding-guide" 
   status = 200
+  force = true
