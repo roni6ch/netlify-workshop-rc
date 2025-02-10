@@ -80,7 +80,7 @@ export default function OnboardingGuide() {
             headers,
             body: JSON.stringify(address)
         });
-        const { token } = await response?.json();
+        const { token } = await response.json();
         return token;
     }
 
