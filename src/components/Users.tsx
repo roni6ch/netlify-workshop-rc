@@ -1,5 +1,5 @@
 
-import { Chip, CircularProgress, Stack, Button } from '@mui/material';
+import { CircularProgress, Button, Skeleton, Typography } from '@mui/material';
 import Box from '@mui/material/Box';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -9,8 +9,7 @@ import TextField from '@mui/material/TextField';
 import { ENV } from 'netlify/functions/util';
 import { SetStateAction, useEffect } from 'react';
 import { useState } from 'react';
-import SendIcon from '@mui/icons-material/Send';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import { useTabState } from '~/pages';
 
 
 enum SignUpReason {
@@ -38,11 +37,10 @@ interface UsersProps {
 }
 
 export default function Users({ onEligibleChange }: UsersProps) {
-  const [token, setToken] = useState('');
   const [userName, setUserName] = useState('');
   const [traditionalAccountType, setTraditionalAccountType] = useState(CompanyAccountType.TRAVEL_AND_LIQUID);
   const [initiated, setInitiated] = useState(false);
-  const [response, setResponse] = useState({ email: '' });
+  const { setUser, setToken } = useTabState();
   const [isLoading, setIsLoading] = useState(false);
   const [isEligible, setIsEligible] = useState(false);
   const [withAddress, setWithAddress] = useState(true);
@@ -81,7 +79,7 @@ export default function Users({ onEligibleChange }: UsersProps) {
       const data = await response.json();
       console.log(data.userToken);
       console.log(data.email);
-      setResponse(data);
+      setUser(data);
       setToken(data.userToken);
       setLoadingStates(prevState => ({ ...prevState, [signupReason]: false }));
       setIsLoading(false);
@@ -97,7 +95,7 @@ export default function Users({ onEligibleChange }: UsersProps) {
       const response = await fetch(`/api/traditional?accountSegment=${accountSegment}&accountType=${traditionalAccountType}&userName=${userName}&withAddress=${withAddress}`);
       const data = await response.json();
       console.log(data);
-      setResponse(data);
+      setUser(data);
       loginRequest(data);
       setLoadingStates(prevState => ({ ...prevState, [accountSegment]: false }));
       setIsLoading(false);
@@ -123,23 +121,24 @@ export default function Users({ onEligibleChange }: UsersProps) {
     }
   }
 
-  const copyToKeyboard = async (text: string) => {
-    try {
-      await navigator.clipboard.writeText(text);
-    } catch (error) {
-      console.error("Error copying to clipboard:", error);
-    }
-  };
 
-  const openPrimeUserWindow = async () => {
-    try {
-      await copyToKeyboard(token);
-      window.open(`${ENV}/app/user2`, '_blank');
-    } catch (error) {
-      console.error("Error copying to clipboard:", error);
-      window.open(`${ENV}/app/user2`, '_blank');
-    }
-  };
+  const SkeletonAnimation = () => {
+    return (
+      <>
+        <Typography component="div">
+          <Skeleton />
+        </Typography>
+        <Box sx={{ width: 300 }}>
+          <Skeleton />
+          <Skeleton animation="wave" />
+          <Skeleton animation={false} />
+        </Box>
+        <Typography component="div">
+          <Skeleton />
+        </Typography>
+      </>
+    );
+  }
 
 
   const selfSellSignupCompanies = [
@@ -165,6 +164,7 @@ export default function Users({ onEligibleChange }: UsersProps) {
   ];
 
   return <>
+    {!initiated && SkeletonAnimation()}
     {initiated && <>
       <h1>Staging Prime - Users Generator!</h1>
       <hr />
@@ -188,8 +188,6 @@ export default function Users({ onEligibleChange }: UsersProps) {
       </Box>
 
       {isEligible && <>
-        <br />
-        <br />
         <h3>Self sell</h3>
         <ButtonGroup variant="contained">
           {selfSellSignupCompanies.map(({ reason, label }) => (
@@ -245,48 +243,6 @@ export default function Users({ onEligibleChange }: UsersProps) {
         </ButtonGroup>
         <br /> <br />
       </>}
-      <hr />
-      {response?.email &&
-        <Box display="flex" alignItems="center" gap={2}>
-          Email <Stack direction="row" spacing={1}>
-            <Chip label={response?.email} />
-          </Stack>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => copyToKeyboard(response?.email)}
-            endIcon={<ContentCopyIcon />}
-          >
-            Copy
-          </Button>
-        </Box>
-      }
-      <br />
-      {token && <Box display="flex" alignItems="center" gap={2}>
-        Token
-        <Stack direction="row" spacing={1} sx={() => ({
-          borderRadius: 1,
-          width: '45%',
-        })}>
-          <Chip label={token} />
-        </Stack>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => copyToKeyboard(token)}
-          endIcon={<ContentCopyIcon />}
-        >
-          Copy
-        </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => openPrimeUserWindow()}
-          endIcon={<SendIcon />}
-        >
-          Copy + prime!
-        </Button>
-      </Box>}
     </>
     }
   </>
