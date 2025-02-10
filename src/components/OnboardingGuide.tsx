@@ -1,6 +1,6 @@
 import { Box, TextField, Button, CircularProgress, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 import React, { useState } from "react";
-import { AccountType, ENV, OnboardingCategory, OnboardingGuides } from "~/assets/onboardingGuide.util";
+import { AccountType, ENV, OnboardingCategory, OnboardingGuides, TaskId } from "~/assets/onboardingGuide.util";
 
 export default function OnboardingGuide() {
     const [userToken, setUserToken] = useState('');
@@ -62,23 +62,32 @@ export default function OnboardingGuide() {
     };
 
     const handleCTAClick = async (taskId: string, selectedAccountType: AccountType) => {
-        await completeTask(taskId, selectedAccountType);
-        // switch (taskId) {
-        //     case TaskId.EXPLORE_DASHBOARDS_AND_ANALYTICS:
-        //         await completeTask(taskId, selectedAccountType);
-        //         break;
-        //     case TaskId.ADD_USERS:
-        //         break;
-        //     default:
-        //         console.log('Custom Task action', taskId);
-        // }
+        let newToken = '';
+        switch (taskId) {
+            case TaskId.OFFICES_AND_LEGAL_ENTITIES:
+                newToken = await setAddress();
+                break;
+        }
+        await completeTask(taskId, selectedAccountType, newToken);
         await getOnboardingGuideTasks();
     };
 
-    const completeTask = async (taskId: string, selectedAccountType: AccountType) => {
+    const setAddress = async () => {
+        const address = { companyLegalName: "company-name", city: "London", country: "GB", address1: "Oxford", address2: "", zipCode: "07086" }
+        const headers = { 'Content-Type': 'application/json', Authorization: `TripActions ${userToken}` };
+        const response = await fetch(`${ENV}/api/admin/growth/configureCompany`, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify(address)
+        });
+        const { token } = await response?.json();
+        return token;
+    }
+
+    const completeTask = async (taskId: string, selectedAccountType: AccountType, newToken?: string) => {
         try {
             setLoading(true);
-            const headers = { 'Content-Type': 'application/json', Authorization: `TripActions ${userToken}` };
+            const headers = { 'Content-Type': 'application/json', Authorization: `TripActions ${newToken || userToken}` };
             const scope = selectedAccountType === AccountType.COMPANY ? AccountType.COMPANY : AccountType.USER;
             const body = {
                 id: taskId,

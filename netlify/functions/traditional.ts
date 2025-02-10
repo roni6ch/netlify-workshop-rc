@@ -75,6 +75,7 @@ export default async (req: Request): Promise<Response> => {
     console.log('--- setupUser ---');
     const url = `/api/superAdmin/signupToken?email=${email}`;
     loginToken = await makeRequest({ url, method: 'GET', headers: getCommonHeaders(TAtoken), body: null, isTextResponse: true });
+    console.log('loginToken ---> ', loginToken);
   }
 
   async function createAccount() {

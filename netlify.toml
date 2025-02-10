@@ -22,3 +22,9 @@
   to = "/.netlify/functions/onboarding-guide" 
   status = 200
   force = true
+
+[[redirects]]
+  from = "/api/permissions"
+  to = "/.netlify/functions/permissions" 
+  status = 200
+  force = true

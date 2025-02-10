@@ -50,8 +50,8 @@ export default function Users({ onEligibleChange }: UsersProps) {
 
   const checkSplitView = async (user: string) => {
     try {
-      const response = await fetch(`${ENV}/api/splits/GROWTH_DEBUG_VIEW?userEmail=${user}`);
-      const data = await response.json();
+      const response = await fetch(`/api/permissions?userEmail=${user}`);
+      const { data } = await response.json();
       const url = new URL(window.location.href);
       const eligibleUser = url.searchParams.get('eligible') === 'true';
       setIsEligible(eligibleUser || data.enabled);
@@ -244,41 +244,50 @@ export default function Users({ onEligibleChange }: UsersProps) {
           ))}
         </ButtonGroup>
         <br /> <br />
-        <hr />
-        {response?.email &&
-          <Box display="flex" alignItems="center" gap={2}>
-            Email <Stack direction="row" spacing={1}>
-              <Chip label={response?.email} />
-            </Stack>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => copyToKeyboard(response?.email)}
-              endIcon={<ContentCopyIcon />}
-            >
-              Copy
-            </Button>
-          </Box>
-        }
-        <br />
-        {token && <Box display="flex" alignItems="center" gap={2}>
-          Token
-          <Stack direction="row" spacing={1} sx={() => ({
-            borderRadius: 1,
-            width: '45%',
-          })}>
-            <Chip label={token} />
+      </>}
+      <hr />
+      {response?.email &&
+        <Box display="flex" alignItems="center" gap={2}>
+          Email <Stack direction="row" spacing={1}>
+            <Chip label={response?.email} />
           </Stack>
           <Button
             variant="contained"
             color="primary"
-            onClick={() => openPrimeUserWindow()}
-            endIcon={<SendIcon />}
+            onClick={() => copyToKeyboard(response?.email)}
+            endIcon={<ContentCopyIcon />}
           >
-            Copy + prime!
+            Copy
           </Button>
-        </Box>}
-      </>}
-    </>}
+        </Box>
+      }
+      <br />
+      {token && <Box display="flex" alignItems="center" gap={2}>
+        Token
+        <Stack direction="row" spacing={1} sx={() => ({
+          borderRadius: 1,
+          width: '45%',
+        })}>
+          <Chip label={token} />
+        </Stack>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => copyToKeyboard(token)}
+          endIcon={<ContentCopyIcon />}
+        >
+          Copy
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => openPrimeUserWindow()}
+          endIcon={<SendIcon />}
+        >
+          Copy + prime!
+        </Button>
+      </Box>}
+    </>
+    }
   </>
 }
