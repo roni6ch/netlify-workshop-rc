@@ -9,14 +9,15 @@
 [[redirects]]
   from = "/api/traditional"
   to = "/.netlify/functions/traditional" 
-  status = 200 
+  status = 200
 
 [[redirects]]
-  from = "/api/companyinfo"
-  to = "/.netlify/functions/company-info" 
-  status = 200 
+  from = "/api/company-info"
+  to = "/.netlify/functions/company-info"
+  status = 200
+  force = true
 
-  [[redirects]]
+[[redirects]]
   from = "/api/onboardingGuide"
   to = "/.netlify/functions/onboarding-guide" 
-  status = 200 
+  status = 200

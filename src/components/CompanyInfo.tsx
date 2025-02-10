@@ -27,7 +27,7 @@ export default function CompanyInfo() {
         try {
             if (companyUuid) {
                 setLoading(true);
-                const response = await fetch(`/api/companyinfo?companyUuid=${companyUuid}`);
+                const response = await fetch(`/api/company-info?companyUuid=${companyUuid}`);
                 const { data } = await response.json();
                 setCompanyInfo(data?.company);
             }
