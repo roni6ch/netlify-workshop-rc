@@ -52,8 +52,10 @@ export default function Users({ onEligibleChange }: UsersProps) {
     try {
       const response = await fetch(`${ENV}/api/splits/GROWTH_DEBUG_VIEW?userEmail=${user}`);
       const data = await response.json();
-      setIsEligible(data.enabled);
-      onEligibleChange(data.enabled);
+      const url = new URL(window.location.href);
+      const eligibleUser = url.searchParams.get('eligible') === 'true';
+      setIsEligible(eligibleUser || data.enabled);
+      onEligibleChange(eligibleUser || data.enabled);
       setInitiated(true);
     } catch (error) {
       console.error("Error calling API:", error);

@@ -14,6 +14,9 @@ export async function makeRequest({
   isProd
 }: Request) {
   try {
+    console.log('-- url --', url);
+    console.log('-- body --', body);
+    console.log('-- headers --', headers);
     const response = await fetch(ENV + url, {
       method,
       headers,
@@ -24,8 +27,10 @@ export async function makeRequest({
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
     if (isTextResponse) {
+      console.log('-- isTextResponse --', response.text());
       return response.text();
     }
+    console.log('-- isTextResponse --', await response.json());
     return await response.json();
   } catch (error) {
     console.error('Error making request:', error);
