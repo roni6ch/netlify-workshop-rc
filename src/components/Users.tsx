@@ -38,7 +38,7 @@ interface UsersProps {
 
 export default function Users({ onEligibleChange }: UsersProps) {
   const [userName, setUserName] = useState('');
-  const [traditionalAccountType, setTraditionalAccountType] = useState(CompanyAccountType.TRAVEL_AND_LIQUID);
+  const [traditionalAccountType, setTraditionalAccountType] = useState(CompanyAccountType.TRAVEL);
   const [initiated, setInitiated] = useState(false);
   const { setUser, setToken } = useTabState();
   const [isLoading, setIsLoading] = useState(false);
