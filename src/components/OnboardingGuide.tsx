@@ -1,11 +1,10 @@
 import { Box, TextField, Button, CircularProgress, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 import React, { useContext, useState } from "react";
-import { AccountType, ENV, OnboardingCategory, OnboardingGuides, TaskId } from "~/assets/onboardingGuide.util";
+import { AccountType, ENV, OnboardingCategory, TaskId } from "~/assets/onboardingGuide.util";
 import { TabStateContext } from "../context/TabStateContext";
 
 export default function OnboardingGuide() {
-    const { token, setToken } = useContext(TabStateContext);
-    const [onboardingGuide, setOnboardingGuide] = useState<OnboardingGuides>({});
+    const { token, setToken, onboardingGuide, setOnboardingGuide } = useContext(TabStateContext);
     const [loading, setLoading] = useState(false);
 
     const getOnboardingGuideTasks = async () => {

@@ -1,4 +1,3 @@
-
 import { CircularProgress, Button, Skeleton, Typography } from '@mui/material';
 import Box from '@mui/material/Box';
 import ButtonGroup from '@mui/material/ButtonGroup';
@@ -116,7 +115,6 @@ export default function Users({ onEligibleChange }: UsersProps) {
       console.error("Error calling API:", error);
     }
   }
-
 
   const SkeletonAnimation = () => {
     return (

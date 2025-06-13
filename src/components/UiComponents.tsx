@@ -1,6 +1,6 @@
 import { Box, TextField, Button, CircularProgress, Snackbar, Alert } from "@mui/material";
 import React, { useContext, useState } from "react";
-import { TabStateContext } from "../context/TabStateContext";
+import { TabStateContext } from "~/context/TabStateContext";
 
 export default function UiComponents() {
     const { token, setToken } = useContext(TabStateContext);

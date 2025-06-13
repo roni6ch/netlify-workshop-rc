@@ -1,7 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, Button, CircularProgress, Box } from "@mui/material";
+import { TabStateContext } from "../context/TabStateContext";
+import { decodeJwtToken } from "../utils/jwt";
 
 export default function CompanyInfo() {
+    const { token } = useContext(TabStateContext);
     const [companyUuid, setCompanyUuid] = useState('');
     const [companyInfo, setCompanyInfo] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -22,6 +25,15 @@ export default function CompanyInfo() {
         "selfSellSource",
         "creationFlow"
     ];
+
+    useEffect(() => {
+        if (token) {
+            const decodedToken = decodeJwtToken(token);
+            if (decodedToken?.companyUuid) {
+                setCompanyUuid(decodedToken.companyUuid);
+            }
+        }
+    }, [token]);
 
     const getCompanyInfo = async () => {
         try {

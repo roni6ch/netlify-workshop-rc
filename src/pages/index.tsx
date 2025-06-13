@@ -38,6 +38,7 @@ export default function BasicTabs() {
   const [value, setValue] = useState(0);
   const [user, setUser] = useState({ email: '' });
   const [token, setToken] = useState('');
+  const [onboardingGuide, setOnboardingGuide] = useState({});
   const [isEligible, setIsEligible] = useState(false);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -65,7 +66,14 @@ export default function BasicTabs() {
   };
 
   return (
-    <TabStateContext.Provider value={{ user, token, setUser, setToken }}>
+    <TabStateContext.Provider value={{ 
+      user, 
+      token, 
+      setUser, 
+      setToken,
+      onboardingGuide,
+      setOnboardingGuide
+    }}>
       <Box sx={{ width: '100%' }}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <Tabs value={value} onChange={handleChange}>
