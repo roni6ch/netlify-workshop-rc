@@ -7,9 +7,9 @@ import FormGroup from '@mui/material/FormGroup';
 import Switch from '@mui/material/Switch';
 import TextField from '@mui/material/TextField';
 import { ENV } from 'netlify/functions/util';
-import { SetStateAction, useEffect } from 'react';
+import { SetStateAction, useEffect, useContext } from 'react';
 import { useState } from 'react';
-import { useTabState } from '~/pages';
+import { TabStateContext } from '../context/TabStateContext';
 
 
 enum SignUpReason {
@@ -37,10 +37,10 @@ interface UsersProps {
 }
 
 export default function Users({ onEligibleChange }: UsersProps) {
+  const { setUser, setToken } = useContext(TabStateContext);
   const [userName, setUserName] = useState('');
   const [traditionalAccountType, setTraditionalAccountType] = useState(CompanyAccountType.TRAVEL);
   const [initiated, setInitiated] = useState(false);
-  const { setUser, setToken } = useTabState();
   const [isLoading, setIsLoading] = useState(false);
   const [isEligible, setIsEligible] = useState(false);
   const [withAddress, setWithAddress] = useState(true);
@@ -77,8 +77,6 @@ export default function Users({ onEligibleChange }: UsersProps) {
       setLoadingStates(prevState => ({ ...prevState, [signupReason]: true }));
       const response = await fetch(`/api/selfsell?signupReason=${signupReason}&userName=${userName}`);
       const data = await response.json();
-      console.log(data.userToken);
-      console.log(data.email);
       setUser(data);
       setToken(data.userToken);
       setLoadingStates(prevState => ({ ...prevState, [signupReason]: false }));
@@ -94,7 +92,6 @@ export default function Users({ onEligibleChange }: UsersProps) {
       setLoadingStates(prevState => ({ ...prevState, [accountSegment]: true }));
       const response = await fetch(`/api/traditional?accountSegment=${accountSegment}&accountType=${traditionalAccountType}&userName=${userName}&withAddress=${withAddress}`);
       const data = await response.json();
-      console.log(data);
       setUser(data);
       loginRequest(data);
       setLoadingStates(prevState => ({ ...prevState, [accountSegment]: false }));
@@ -114,7 +111,6 @@ export default function Users({ onEligibleChange }: UsersProps) {
         },
       });
       const { token } = await response.json();
-      console.log(token);
       setToken(token);
     } catch (error) {
       console.error("Error calling API:", error);

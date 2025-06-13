@@ -8,7 +8,6 @@ export default async (req: Request): Promise<Response> => {
     async function getCompanyInfo() {
         const url = `/api/superAdmin/selfonboarding/v2/params?companyUuid=${companyUuid}`;
         const data = await makeRequest({ url, method: 'GET', headers: getCommonHeaders(TAtoken), body: null });
-        console.log(data);
         return data;
     }
 

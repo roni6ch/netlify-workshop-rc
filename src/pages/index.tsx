@@ -4,12 +4,14 @@ import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import Users from '~/components/Users';
 import CompanyInfo from '~/components/CompanyInfo';
-import { createContext, useContext, useState } from 'react';
+import { useState } from 'react';
 import OnboardingGuide from '~/components/OnboardingGuide';
 import { Button, Chip, Stack } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { ENV } from '~/assets/onboardingGuide.util';
+import UiComponents from '~/components/UiComponents';
+import { TabStateContext } from '../context/TabStateContext';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -31,19 +33,6 @@ function CustomTabPanel(props: TabPanelProps) {
     </div>
   );
 }
-
-const TabStateContext = createContext<{
-  user: { email: string };
-  token: string;
-  setUser: React.Dispatch<React.SetStateAction<{ email: string }>>;
-  setToken: React.Dispatch<React.SetStateAction<string>>;
-}>({
-  user: { email: '' },
-  token: '',
-  setToken: () => { },
-  setUser: () => { }
-});
-export const useTabState = () => useContext(TabStateContext);
 
 export default function BasicTabs() {
   const [value, setValue] = useState(0);
@@ -76,20 +65,14 @@ export default function BasicTabs() {
   };
 
   return (
-    <TabStateContext.Provider
-      value={{
-        user,
-        token,
-        setToken,
-        setUser
-      }}
-    >
+    <TabStateContext.Provider value={{ user, token, setUser, setToken }}>
       <Box sx={{ width: '100%' }}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <Tabs value={value} onChange={handleChange}>
             <Tab label="Users" />
             <Tab label="Company Info" />
             <Tab label="Onboarding Guide" />
+            <Tab label="UI Components" />
           </Tabs>
         </Box>
         <CustomTabPanel value={value} index={0}>
@@ -100,6 +83,9 @@ export default function BasicTabs() {
         </CustomTabPanel>
         <CustomTabPanel value={value} index={2}>
           {isEligible && <OnboardingGuide />}
+        </CustomTabPanel>
+        <CustomTabPanel value={value} index={3}>
+          <UiComponents />
         </CustomTabPanel>
       </Box>
 

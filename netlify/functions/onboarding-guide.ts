@@ -7,7 +7,6 @@ export default async (req: Request): Promise<Response> => {
     async function getOG() {
         const url = `/api/selfSetup/onboardingGuides`;
         const data = await makeRequest({ url, method: 'GET', headers: getCommonHeaders(token) });
-        console.log(data);
         return data;
     }
 

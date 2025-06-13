@@ -11,7 +11,6 @@ export async function makeRequest({
   headers,
   body,
   isTextResponse,
-  isProd
 }: Request) {
   try {
     const response = await fetch(ENV + url, {
