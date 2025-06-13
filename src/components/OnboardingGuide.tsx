@@ -2,6 +2,7 @@ import { Box, TextField, Button, CircularProgress, Paper, Table, TableBody, Tabl
 import React, { useContext, useState } from "react";
 import { AccountType, ENV, OnboardingCategory, TaskId } from "~/assets/onboardingGuide.util";
 import { TabStateContext } from "../context/TabStateContext";
+import { Typography } from "@mui/material";
 
 export default function OnboardingGuide() {
     const { token, setToken, onboardingGuide, setOnboardingGuide } = useContext(TabStateContext);
@@ -196,7 +197,20 @@ export default function OnboardingGuide() {
 
     return (
         <div>
-            <h1>Staging Prime - Onboarding Guide</h1>
+            <Typography 
+                variant="h4" 
+                sx={{ 
+                    mb: 3,
+                    fontWeight: 600,
+                    color: '#1976d2',
+                    textAlign: 'center',
+                    textTransform: 'uppercase',
+                    letterSpacing: '1px',
+                    textShadow: '2px 2px 4px rgba(0,0,0,0.1)'
+                }}
+            >
+                Onboarding Guide
+            </Typography>
             <br />
             <Box display="flex" alignItems="center" gap={2}>
                 <TextField

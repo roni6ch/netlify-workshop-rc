@@ -1,5 +1,5 @@
-import React, { useState, useContext, useEffect } from "react";
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, Button, CircularProgress, Box } from "@mui/material";
+import React, { useState, useContext, useEffect, useRef } from "react";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, Button, CircularProgress, Box, Typography } from "@mui/material";
 import { TabStateContext } from "../context/TabStateContext";
 import { decodeJwtToken } from "../utils/jwt";
 
@@ -8,6 +8,7 @@ export default function CompanyInfo() {
     const [companyUuid, setCompanyUuid] = useState('');
     const [companyInfo, setCompanyInfo] = useState(null);
     const [loading, setLoading] = useState(false);
+    const lastFetchedUuid = useRef('');
 
     const keysToDisplay = [
         "dateCreated",
@@ -31,6 +32,10 @@ export default function CompanyInfo() {
             const decodedToken = decodeJwtToken(token);
             if (decodedToken?.companyUuid) {
                 setCompanyUuid(decodedToken.companyUuid);
+                // Only fetch if we haven't fetched this UUID before
+                if (decodedToken.companyUuid !== lastFetchedUuid.current) {
+                    handleSubmit();
+                }
             }
         }
     }, [token]);
@@ -42,6 +47,7 @@ export default function CompanyInfo() {
                 const response = await fetch(`/api/company-info?companyUuid=${companyUuid}`);
                 const { data } = await response.json();
                 setCompanyInfo(data?.company);
+                lastFetchedUuid.current = companyUuid;
             }
         } catch (error) {
             console.error("Error fetching company info:", error);
@@ -50,13 +56,30 @@ export default function CompanyInfo() {
         }
     };
 
+    const handleSubmit = () => {
+        getCompanyInfo();
+    };
+
     const filteredData = companyInfo ? Object.fromEntries(
         Object.entries(companyInfo).filter(([key]) => keysToDisplay.includes(key))
     ) : {};
 
     return (
         <div>
-            <h1>Staging Prime - Company Info</h1>
+            <Typography 
+                variant="h4" 
+                sx={{ 
+                    mb: 3,
+                    fontWeight: 600,
+                    color: '#1976d2',
+                    textAlign: 'center',
+                    textTransform: 'uppercase',
+                    letterSpacing: '1px',
+                    textShadow: '2px 2px 4px rgba(0,0,0,0.1)'
+                }}
+            >
+                Company Info
+            </Typography>
             {/* <FormGroup>
                 <FormControlLabel control={<Switch />} label="Prod?" checked={isProd} onChange={(e) => setIsProd((e.target as HTMLInputElement).checked)} />
             </FormGroup> */}
@@ -71,7 +94,7 @@ export default function CompanyInfo() {
                 <Button
                     variant="contained"
                     color="primary"
-                    onClick={getCompanyInfo}
+                    onClick={handleSubmit}
                     disabled={loading || !companyUuid}
                 >
                     {loading ? <CircularProgress size={24} /> : "Submit"}

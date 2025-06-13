@@ -1,4 +1,4 @@
-import { CircularProgress, Button, Skeleton, Typography } from '@mui/material';
+import { CircularProgress, Button, Skeleton, Typography, Alert, Snackbar, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import Box from '@mui/material/Box';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -31,6 +31,13 @@ enum CompanyAccountType {
   TRAVEL_AND_LIQUID = 'TRAVEL_AND_LIQUID'
 }
 
+export const plsAnnualTravelBudgetOption = [
+  { key: 'UP_TO_50K', value: '$0 - $50,000 annually' },
+  { key: 'UP_TO_400K', value: '$50,001 - $400,000 annually' },
+  { key: 'ABOVE_400K', value: 'More than $400,000 annually' },
+  { key: 'NOT_SPECIFIED', value: 'I don\'t know' },
+];
+
 interface UsersProps {
   onEligibleChange: (isEligible: boolean) => void;
 }
@@ -44,6 +51,12 @@ export default function Users({ onEligibleChange }: UsersProps) {
   const [isEligible, setIsEligible] = useState(false);
   const [withAddress, setWithAddress] = useState(true);
   const [loadingStates, setLoadingStates] = useState<{ [key: string]: boolean }>({});
+  const [notification, setNotification] = useState<{ open: boolean; message: string; severity: 'success' | 'error' }>({
+    open: false,
+    message: '',
+    severity: 'success'
+  });
+  const [annualTravelBudget, setAnnualTravelBudget] = useState('UP_TO_400K');
 
   const checkSplitView = async (user: string) => {
     try {
@@ -74,14 +87,25 @@ export default function Users({ onEligibleChange }: UsersProps) {
     try {
       setIsLoading(true);
       setLoadingStates(prevState => ({ ...prevState, [signupReason]: true }));
-      const response = await fetch(`/api/selfsell?signupReason=${signupReason}&userName=${userName}`);
+      const response = await fetch(`/api/selfsell?signupReason=${signupReason}&userName=${userName}&tbum=${annualTravelBudget}`);
       const data = await response.json();
       setUser(data);
       setToken(data.userToken);
       setLoadingStates(prevState => ({ ...prevState, [signupReason]: false }));
-      setIsLoading(false);
+      setNotification({
+        open: true,
+        message: 'User created successfully!',
+        severity: 'success'
+      });
     } catch (error) {
       console.error("Error calling API:", error);
+      setNotification({
+        open: true,
+        message: 'Failed to create user',
+        severity: 'error'
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -94,9 +118,20 @@ export default function Users({ onEligibleChange }: UsersProps) {
       setUser(data);
       loginRequest(data);
       setLoadingStates(prevState => ({ ...prevState, [accountSegment]: false }));
-      setIsLoading(false);
+      setNotification({
+        open: true,
+        message: 'User created successfully!',
+        severity: 'success'
+      });
     } catch (error) {
       console.error("Error calling API:", error);
+      setNotification({
+        open: true,
+        message: 'Failed to create user',
+        severity: 'error'
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -160,7 +195,20 @@ export default function Users({ onEligibleChange }: UsersProps) {
   return <>
     {!initiated && SkeletonAnimation()}
     {initiated && <>
-      <h1>Staging Prime - Users Generator!</h1>
+      <Typography 
+        variant="h4" 
+        sx={{ 
+          mb: 3,
+          fontWeight: 600,
+          color: '#1976d2',
+          textAlign: 'center',
+          textTransform: 'uppercase',
+          letterSpacing: '1px',
+          textShadow: '2px 2px 4px rgba(0,0,0,0.1)'
+        }}
+      >
+        Users Generator
+      </Typography>
       <hr />
       <br />
       <Box display="flex" alignItems="center" gap={2}>
@@ -170,74 +218,210 @@ export default function Users({ onEligibleChange }: UsersProps) {
           variant="outlined"
           value={userName}
           onChange={handleUsernameChange}
+          sx={{ minWidth: 200 }}
         />
         <Button
           variant="contained"
           color="primary"
           onClick={() => checkSplitView(userName)}
           disabled={isLoading}
+          sx={{ 
+            minWidth: 100,
+            '&:hover': {
+              backgroundColor: 'primary.dark'
+            }
+          }}
         >
           {isLoading ? <CircularProgress size={24} /> : "Submit"}
         </Button>
       </Box>
 
       {isEligible && <>
-        <h3>Self sell</h3>
-        <ButtonGroup variant="contained">
-          {selfSellSignupCompanies.map(({ reason, label }) => (
-            <Button
-              key={reason}
-              onClick={() => handleSelfSellApiCall(reason)}
-              loading={loadingStates[reason]}
-              loadingPosition="start"
-              disabled={isLoading && !loadingStates[reason]}
-            >
-              {label}
-            </Button>
-          ))}
-        </ButtonGroup>
-
-        <br />
+        <Box sx={{ mt: 4 }}>
+          <Typography variant="h6" gutterBottom>Self sell</Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+            <FormControl sx={{ minWidth: 300 }}>
+              <InputLabel>Annual Travel Budget</InputLabel>
+              <Select
+                value={annualTravelBudget}
+                label="Annual Travel Budget"
+                onChange={(e) => setAnnualTravelBudget(e.target.value)}
+                disabled={isLoading}
+              >
+                {plsAnnualTravelBudgetOption.map((option) => (
+                  <MenuItem key={option.key} value={option.key}>
+                    {option.value}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Box>
+          <ButtonGroup 
+            variant="contained" 
+            sx={{ 
+              gap: 1,
+              '& .MuiButton-root': {
+                minWidth: 120,
+                textTransform: 'none',
+                backgroundColor: '#1976d2',
+                '&:hover': {
+                  backgroundColor: '#1565c0'
+                }
+              }
+            }}
+          >
+            {selfSellSignupCompanies.map(({ reason, label }) => (
+              <Button
+                key={reason}
+                onClick={() => handleSelfSellApiCall(reason)}
+                disabled={isLoading && !loadingStates[reason]}
+                sx={{ 
+                  position: 'relative',
+                  '&:disabled': {
+                    backgroundColor: 'action.disabledBackground'
+                  }
+                }}
+              >
+                {loadingStates[reason] ? <CircularProgress size={20} sx={{ mr: 1 }} /> : null}
+                {label}
+              </Button>
+            ))}
+          </ButtonGroup>
+        </Box>
         <br />
         <hr />
-        <h3>Traditional</h3>
 
-        <FormGroup>
-          <FormControlLabel control={<Switch />} label="With Address?" disabled={isLoading} checked={withAddress} onChange={e => setWithAddress((e.target as HTMLInputElement).checked)} />
-        </FormGroup>
-        <h6>Account Type</h6>
-        <ButtonGroup variant="contained">
-          {traditionalAccountTypes.map(({ accountType, label }) => (
-            <Button
-              key={accountType}
-              size="small"
-              color="secondary"
-              onClick={() => setTraditionalAccountType(accountType)}
-              variant={accountType === traditionalAccountType ? 'outlined' : 'contained'}
-              disabled={isLoading}
-            >
-              {label}
-            </Button>
-          ))}
-        </ButtonGroup>
+        <Box sx={{ mt: 4 }}>
+          <Typography variant="h6" gutterBottom>Traditional</Typography>
+          
+          <FormGroup sx={{ mb: 2 }}>
+            <FormControlLabel 
+              control={
+                <Switch 
+                  checked={withAddress} 
+                  onChange={e => setWithAddress((e.target as HTMLInputElement).checked)}
+                  disabled={isLoading}
+                />
+              } 
+              label="With Address?" 
+            />
+          </FormGroup>
 
-        <h6>Account Segment</h6>
-        <ButtonGroup variant="contained">
-          {traditionalSignupCompanies.map(({ accountSegment, label }) => (
-            <Button
-              key={accountSegment}
-              onClick={() => handleTraditionalApiCall(accountSegment)}
-              loading={loadingStates[accountSegment]}
-              loadingPosition="start"
-              disabled={isLoading && !loadingStates[accountSegment]}
-            >
-              {label}
-            </Button>
-          ))}
-        </ButtonGroup>
-        <br /> <br />
+          <Typography 
+            variant="h6" 
+            sx={{ 
+              mb: 2,
+              fontWeight: 500,
+              color: '#424242'
+            }}
+          >
+            Account Type
+          </Typography>
+          <ButtonGroup 
+            variant="contained" 
+            sx={{ 
+              mb: 3,
+              gap: 1,
+              '& .MuiButton-root': {
+                minWidth: 100,
+                textTransform: 'none',
+                backgroundColor: '#eb77ff',
+                '&:hover': {
+                  backgroundColor: '#7b1fa2'
+                }
+              }
+            }}
+          >
+            {traditionalAccountTypes.map(({ accountType, label }) => (
+              <Button
+                key={accountType}
+                size="small"
+                color="secondary"
+                onClick={() => setTraditionalAccountType(accountType)}
+                variant={accountType === traditionalAccountType ? 'outlined' : 'contained'}
+                disabled={isLoading}
+                sx={{ 
+                  minWidth: 100,
+                  textTransform: 'none',
+                  ...(accountType === traditionalAccountType && {
+                    backgroundColor: 'gray',
+                    color: '#424242',
+                    borderColor: '#9e9e9e',
+                    '&:hover': {
+                      backgroundColor: '#bdbdbd',
+                      borderColor: '#757575'
+                    }
+                  }),
+                  ...(accountType !== traditionalAccountType && {
+                    '&:hover': {
+                      backgroundColor: '#7b1fa2'
+                    }
+                  })
+                }}
+              >
+                {label}
+              </Button>
+            ))}
+          </ButtonGroup>
+
+          <Typography 
+            variant="h6" 
+            sx={{ 
+              mb: 2,
+              fontWeight: 500,
+              color: '#424242'
+            }}
+          >
+            Account Segment
+          </Typography>
+          <ButtonGroup 
+            variant="contained"
+            sx={{ 
+              gap: 1,
+              '& .MuiButton-root': {
+                minWidth: 120,
+                textTransform: 'none',
+                backgroundColor: '#2e7d32',
+                '&:hover': {
+                  backgroundColor: '#1b5e20'
+                }
+              }
+            }}
+          >
+            {traditionalSignupCompanies.map(({ accountSegment, label }) => (
+              <Button
+                key={accountSegment}
+                onClick={() => handleTraditionalApiCall(accountSegment)}
+                disabled={isLoading && !loadingStates[accountSegment]}
+                sx={{ 
+                  position: 'relative',
+                  '&:disabled': {
+                    backgroundColor: 'action.disabledBackground'
+                  }
+                }}
+              >
+                {loadingStates[accountSegment] ? <CircularProgress size={20} sx={{ mr: 1 }} /> : null}
+                {label}
+              </Button>
+            ))}
+          </ButtonGroup>
+        </Box>
       </>}
-    </>
-    }
-  </>
+    </>}
+
+    <Snackbar 
+      open={notification.open} 
+      autoHideDuration={6000} 
+      onClose={() => setNotification(prev => ({ ...prev, open: false }))}
+      anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+    >
+      <Alert 
+        onClose={() => setNotification(prev => ({ ...prev, open: false }))} 
+        severity={notification.severity}
+        sx={{ width: '100%' }}
+      >
+        {notification.message}
+      </Alert>
+    </Snackbar>
+  </>;
 }

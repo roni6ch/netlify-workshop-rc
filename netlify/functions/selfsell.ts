@@ -12,6 +12,7 @@ export default async (req: Request): Promise<Response> => {
   const url = new URL(req.url);
   const signupReason = url.searchParams.get("signupReason") || '';
   const userName = url.searchParams.get("userName") || '';
+  const tbum = url.searchParams.get("tbum") || '';
   let TAtoken: string = '', userEmail: string = '', leadToken: string = '', userToken: string = '';
 
   if (!signupReason) {
@@ -54,7 +55,8 @@ export default async (req: Request): Promise<Response> => {
       password: 'Trip@123',
       origin: 'MARKETING_PAGE',
       accountType: signupReason === 'TRAVEL_AND_EXPENSE_SOLUTION' ? 'TRAVEL_AND_LIQUID' : 'TRAVEL',
-      signupReason
+      signupReason,
+      tbum
     };
     const data = await makeRequest({ url, method: 'POST', headers: getCommonHeaders(TAtoken), body });
     userToken = data.token;
