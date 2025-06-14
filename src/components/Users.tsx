@@ -97,6 +97,13 @@ export default function Users({ onEligibleChange }: UsersProps) {
         message: 'User created successfully!',
         severity: 'success'
       });
+      
+      setTimeout(() => {
+        window.scrollTo({
+          top: document.documentElement.scrollHeight,
+          behavior: 'smooth'
+        });
+      }, 100);
     } catch (error) {
       console.error("Error calling API:", error);
       setNotification({
@@ -123,6 +130,12 @@ export default function Users({ onEligibleChange }: UsersProps) {
         message: 'User created successfully!',
         severity: 'success'
       });
+      setTimeout(() => {
+        window.scrollTo({
+          top: document.documentElement.scrollHeight,
+          behavior: 'smooth'
+        });
+      }, 100);
     } catch (error) {
       console.error("Error calling API:", error);
       setNotification({
@@ -207,7 +220,7 @@ export default function Users({ onEligibleChange }: UsersProps) {
           textShadow: '2px 2px 4px rgba(0,0,0,0.1)'
         }}
       >
-        Users Generator
+        User Generator
       </Typography>
       <hr />
       <br />
@@ -264,8 +277,14 @@ export default function Users({ onEligibleChange }: UsersProps) {
                 minWidth: 120,
                 textTransform: 'none',
                 backgroundColor: '#1976d2',
+                outline: 'none',
                 '&:hover': {
-                  backgroundColor: '#1565c0'
+                  backgroundColor: '#1565c0',
+                  outline: 'none'
+                },
+                '&:focus': {
+                  outline: 'none',
+                  boxShadow: 'none'
                 }
               }
             }}
@@ -282,7 +301,7 @@ export default function Users({ onEligibleChange }: UsersProps) {
                   }
                 }}
               >
-                {loadingStates[reason] ? <CircularProgress size={20} sx={{ mr: 1 }} /> : null}
+                {loadingStates[reason] ? <CircularProgress size={20} sx={{ mr: 1 }} color="warning" /> : null}
                 {label}
               </Button>
             ))}
@@ -326,8 +345,14 @@ export default function Users({ onEligibleChange }: UsersProps) {
                 minWidth: 100,
                 textTransform: 'none',
                 backgroundColor: '#eb77ff',
+                outline: 'none',
                 '&:hover': {
-                  backgroundColor: '#7b1fa2'
+                  backgroundColor: '#7b1fa2',
+                  outline: 'none'
+                },
+                '&:focus': {
+                  outline: 'none',
+                  boxShadow: 'none'
                 }
               }
             }}
@@ -382,8 +407,14 @@ export default function Users({ onEligibleChange }: UsersProps) {
                 minWidth: 120,
                 textTransform: 'none',
                 backgroundColor: '#2e7d32',
+                outline: 'none',
                 '&:hover': {
-                  backgroundColor: '#1b5e20'
+                  backgroundColor: '#1b5e20',
+                  outline: 'none'
+                },
+                '&:focus': {
+                  outline: 'none',
+                  boxShadow: 'none'
                 }
               }
             }}

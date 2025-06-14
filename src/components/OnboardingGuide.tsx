@@ -112,23 +112,38 @@ export default function OnboardingGuide() {
         let newToken = '';
         switch (taskId) {
             case TaskId.OFFICES_AND_LEGAL_ENTITIES:
-                newToken = await setAddress();
+                if (newState === 'COMPLETED') {
+                    await setAddress();
+                }
                 break;
+            case TaskId.REVIEW_AND_EDIT_POLICY_FOR_TRAVEL:
+                if (newState === 'COMPLETED') {
+                    newToken = await setUpsellExpense();
+                }
+            break;
         }
         await completeTask(taskId, selectedAccountType, newState, newToken);
         await getOnboardingGuideTasks();
     };
 
+    const setUpsellExpense = async () => {
+        const headers = { 'Content-Type': 'application/json', Authorization: `TripActions ${token.replace(/^"|"$/g, '')}` };
+        const response = await fetch(`${ENV}/api/selfSetup/upsell`, {
+            method: 'PUT',
+            headers,
+        });
+        const { token: newToken } = await response.json();
+        return newToken;
+    }
+
     const setAddress = async () => {
         const address = { companyLegalName: "company-name", city: "London", country: "GB", address1: "Oxford", address2: "", zipCode: "07086" }
         const headers = { 'Content-Type': 'application/json', Authorization: `TripActions ${token.replace(/^"|"$/g, '')}` };
-        const response = await fetch(`${ENV}/api/admin/growth/configureCompany`, {
+        await fetch(`${ENV}/api/admin/growth/configureCompany`, {
             method: 'POST',
             headers,
             body: JSON.stringify(address)
         });
-        const { token: newTokenResponse } = await response.json();
-        return newTokenResponse;
     }
 
     const completeTask = async (taskId: string, selectedAccountType: AccountType, newState: string, newToken?: string) => {
@@ -238,8 +253,11 @@ export default function OnboardingGuide() {
                     color="secondary"
                     onClick={completeAllTasks}
                     disabled={loading || !token || !onboardingGuide?.companyOnboardingGuide?.categories}
+                    sx={{
+                        minWidth: 140,
+                    }}
                 >
-                    {loading ? <CircularProgress size={24} /> : "Complete All Tasks"}
+                    {loading ? <CircularProgress size={24} /> : "Complete All"}
                 </Button>
             </Box>
             <br /><hr />
