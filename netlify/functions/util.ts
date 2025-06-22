@@ -24,9 +24,7 @@ export async function makeRequest({
       ...(body ? { body: JSON.stringify(body) } : {}),
     });
     const text = await response.text();
-    const json = JSON.parse(text);
     console.log('text', text);
-    console.log('json', json);
 
     if (!response.ok) {
       const text = await response.text();
@@ -37,7 +35,7 @@ export async function makeRequest({
     if (isTextResponse) {
       return response.text();
     }
-    return await response.json();
+    return JSON.parse(text); 
   } catch (error) {
     console.error('Error making request:', error);
     throw error;
