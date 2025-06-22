@@ -34,7 +34,7 @@ export async function makeRequest({
     }
     console.log('response', response);
     console.log('response.json()', await response.json());
-    return await response.json();
+    return response.json();
   } catch (error) {
     console.error('Error making request:', error);
     throw error;
