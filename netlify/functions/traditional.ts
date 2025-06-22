@@ -14,9 +14,9 @@ export default async (req: Request): Promise<Response> => {
     const randomId = Math.random().toString(36).substring(2, 8);
     const companyName = `${accountSegment.toLowerCase()}${randomId}`;
     console.log('companyName', companyName);
-    companyDomain = `${companyName}.xyz`;
+    companyDomain = `${companyName}.staging-prime.tripactions.xyz`;
     console.log('companyDomain', companyDomain);
-    email = `${givenName}-generator-traditional-${randomId}@${companyDomain}`;
+    email = `${givenName}-TRAD-${randomId}@${companyDomain}`;
     console.log('email', email);
     const userUuid = "2b5651af-a8b5-4389-b80e-191266858a5c";
     const body = {
@@ -35,7 +35,6 @@ export default async (req: Request): Promise<Response> => {
       },
       isLHGCustomer: false,
       lhgPriceModel: 'free',
-      onboardingCompanySource: 'TRAVEL_AND_PAYMENTS',
       ...(withAddress && {
         address: {
           address1: '123 Main St',
