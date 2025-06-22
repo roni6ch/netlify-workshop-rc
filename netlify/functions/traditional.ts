@@ -13,8 +13,11 @@ export default async (req: Request): Promise<Response> => {
     console.log('--- createCompany ---');
     const randomId = Math.random().toString(36).substring(2, 8);
     const companyName = `${accountSegment.toLowerCase()}${randomId}`;
+    console.log('companyName', companyName);
     companyDomain = `${companyName}.xyz`;
+    console.log('companyDomain', companyDomain);
     email = `${givenName}-generator-traditional-${randomId}@${companyDomain}`;
+    console.log('email', email);
     const userUuid = "2b5651af-a8b5-4389-b80e-191266858a5c";
     const body = {
       category: 'COMMERCIAL',
@@ -44,9 +47,10 @@ export default async (req: Request): Promise<Response> => {
         }
       })
     };
-
+    console.log('body', body);
     const url = '/api/superAdmin/selfonboarding/v2/company';
     const data = await makeRequest({ url, method: 'POST', headers: getCommonHeaders(TAtoken), body });
+    console.log('data', data);
     companyUuid = data.company.uuid;
   }
 
@@ -67,6 +71,7 @@ export default async (req: Request): Promise<Response> => {
         familyName,
       },
     };
+    console.log('body', body);
     const url = '/api/superAdmin/selfonboarding/v2/confirm';
     await makeRequest({ url, method: 'PUT', headers: getCommonHeaders(TAtoken), body });
   }
