@@ -18,8 +18,6 @@ export async function makeRequest({
       headers,
       ...(body ? { body: JSON.stringify(body) } : {}),
     });
-    const text = await response.text();
-    console.log('text', text);
 
     if (!response.ok) {
       const text = await response.text();
@@ -30,7 +28,7 @@ export async function makeRequest({
     if (isTextResponse) {
       return response.text();
     }
-    return JSON.parse(text); 
+    return await response.json();
   } catch (error) {
     console.error('Error making request:', error);
     throw error;
