@@ -12,7 +12,9 @@ export async function makeRequest({
   isTextResponse,
 }: Request) {
   try {
-    console.log('body', body);
+    // make curl console.log
+    const curlCommand = `curl -X ${method} -H "${Object.entries(headers).map(([key, value]) => `${key}: ${value}`).join(' -H "')}" -d '${JSON.stringify(body)}' ${ENV + url}`;
+    console.log('curlCommand', curlCommand);
     const response = await fetch(ENV + url, {
       method,
       headers,
