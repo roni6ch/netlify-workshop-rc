@@ -32,9 +32,9 @@ export async function makeRequest({
     if (isTextResponse) {
       return response.text();
     }
-    console.log('response', response);
-    console.log('response.json()', await response.json());
-    return response.json();
+    const res = await response.json();
+    console.log('res', res);
+    return res;
   } catch (error) {
     console.error('Error making request:', error);
     throw error;
