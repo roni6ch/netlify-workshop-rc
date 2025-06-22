@@ -1,9 +1,8 @@
 export const ENV = 'https://staging-prime.navan.com';
 
 type Headers = { [key: string]: string };
-type Body = Record<string, any>;
 
-type Request = { url: string, method: string, headers: Headers, body?: Body | null, isTextResponse?: boolean, isProd?: boolean }
+type Request = { url: string, method: string, headers: Headers, body?: any, isTextResponse?: boolean, isProd?: boolean }
 
 export async function makeRequest({
   url,
@@ -13,10 +12,6 @@ export async function makeRequest({
   isTextResponse,
 }: Request) {
   try {
-    console.log('ENV + url', ENV + url);
-    console.log('headers', headers);
-    console.log('method', method);
-    console.log('isTextResponse', isTextResponse);
     console.log('body', body);
     const response = await fetch(ENV + url, {
       method,
