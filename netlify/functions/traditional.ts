@@ -49,7 +49,7 @@ export default async (req: Request): Promise<Response> => {
     console.log('body', body);
     const url = '/api/superAdmin/selfonboarding/v2/company';
     console.log('getCommonHeaders(TAtoken)', getCommonHeaders(TAtoken));
-    const data = await makeRequest({ url, method: 'POST', headers: getCommonHeaders(TAtoken), body });
+    const data = await makeRequest({ url, method: 'POST', headers: getCommonHeaders(TAtoken), body, isTextResponse: true });
     console.log('data', data);
     companyUuid = data.company.uuid;
   }

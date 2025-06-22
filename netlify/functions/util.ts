@@ -20,8 +20,11 @@ export async function makeRequest({
     });
 
     if (!response.ok) {
+      const text = await response.text();
+      console.error(`Request failed: ${response.status}`, text);
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
+
     if (isTextResponse) {
       return response.text();
     }
