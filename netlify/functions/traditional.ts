@@ -13,11 +13,8 @@ export default async (req: Request): Promise<Response> => {
     console.log('--- createCompany ---');
     const randomId = Math.random().toString(36).substring(2, 8);
     const companyName = `${accountSegment.toLowerCase()}${randomId}`;
-    console.log('companyName', companyName);
     companyDomain = `${companyName}.staging-prime.tripactions.xyz`;
-    console.log('companyDomain', companyDomain);
     email = `${givenName}-TRAD-${randomId}@${companyDomain}`;
-    console.log('email', email);
     const userUuid = "2b5651af-a8b5-4389-b80e-191266858a5c";
     const body = {
       category: 'COMMERCIAL',
@@ -46,11 +43,8 @@ export default async (req: Request): Promise<Response> => {
         }
       })
     };
-    console.log('body', body);
     const url = '/api/superAdmin/selfonboarding/v2/company';
-    console.log('getCommonHeaders(TAtoken)', getCommonHeaders(TAtoken));
-    const data = await makeRequest({ url, method: 'POST', headers: getCommonHeaders(TAtoken), body, isTextResponse: true });
-    console.log('data', data);
+    const data = await makeRequest({ url, method: 'POST', headers: getCommonHeaders(TAtoken), body });
     companyUuid = data.company.uuid;
   }
 

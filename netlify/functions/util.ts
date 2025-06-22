@@ -13,11 +13,20 @@ export async function makeRequest({
   isTextResponse,
 }: Request) {
   try {
+    console.log('ENV + url', ENV + url);
+    console.log('headers', headers);
+    console.log('method', method);
+    console.log('isTextResponse', isTextResponse);
+    console.log('body', body);
     const response = await fetch(ENV + url, {
       method,
       headers,
       ...(body ? { body: JSON.stringify(body) } : {}),
     });
+    const text = await response.text();
+    const json = JSON.parse(text);
+    console.log('text', text);
+    console.log('json', json);
 
     if (!response.ok) {
       const text = await response.text();
