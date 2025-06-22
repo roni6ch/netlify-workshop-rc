@@ -45,7 +45,7 @@ export default async (req: Request): Promise<Response> => {
     };
     const url = '/api/superAdmin/selfonboarding/v2/company';
     console.log('Calling makeRequest with body:', body); // before
-    const data = await makeRequest({ url, method: 'POST', headers: getCommonHeaders(TAtoken), body });
+    const data = await makeRequest({ url, method: 'POST', headers: getCommonHeaders(TAtoken), body: JSON.stringify(body) });
     companyUuid = data.company.uuid;
   }
 
