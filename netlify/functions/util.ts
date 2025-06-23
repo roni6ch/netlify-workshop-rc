@@ -12,16 +12,15 @@ export async function makeRequest({
   isTextResponse,
 }: Request) {
   try {
-    // make curl console.log
-    const curlCommand = `curl -X ${method} -H "${Object.entries(headers).map(([key, value]) => `${key}: ${value}`).join(' -H "')}" -d '${JSON.stringify(body)}' ${ENV + url}`;
-    console.log('curlCommand', curlCommand);
     console.log('JSON.stringify(body) ', JSON.stringify(body) );
     const response = await fetch(ENV + url, {
       method,
       headers,
       ...(body ? { body: JSON.stringify(body) } : {}),
     });
-    console.log('after fetch', response);
+    // make curl console.log
+    const curlCommand = `curl -X ${method} -H "${Object.entries(headers).map(([key, value]) => `${key}: ${value}`).join(' -H "')}" -d '${JSON.stringify(body)}' ${ENV + url}`;
+    console.log('curlCommand', curlCommand);
 
     if (!response.ok) {
       const text = await response.text();
