@@ -41,7 +41,6 @@ export async function makeRequest({
     console.log('response.ok', response.ok);
     console.log('response.status', response.status);
     console.log('response.statusText', response.statusText);
-    console.log('response.headers', response.headers);
 
     if (!response.ok) {
       const text = await response.text();
@@ -52,9 +51,17 @@ export async function makeRequest({
     if (isTextResponse) {
       return response.text();
     }
-    const res = await response.json();
-    console.log('res', res);
-    return res;
+    const contentType = response.headers.get('content-type');
+    if (contentType.includes('application/json')) {
+      const res = await response.json();
+      console.log('res', res);
+      return res;
+    } else {
+      const text = await response.text();
+      console.warn('⚠️ Non-JSON response, returning raw text');
+      console.log('Raw text response:', text.slice(0, 300));
+      return text;
+    }
   } catch (error) {
     console.error('Error making request:', error);
     throw error;
