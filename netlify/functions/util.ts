@@ -40,7 +40,6 @@ export async function makeRequest({
     console.log('response.status', response.status);
     console.log('response.statusText', response.statusText);
     console.log('response.body', await response.text());
-    console.log('response.json()', await response.json());
     console.log('response.headers', response.headers);
     console.log('response.json()', response.json());
     console.log('response.headers.get("content-type")', response.headers.get("content-type"));
