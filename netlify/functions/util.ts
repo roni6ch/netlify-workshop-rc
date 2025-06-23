@@ -29,13 +29,13 @@ export async function makeRequest({
   isTextResponse,
 }: Request) {
   try {
-    console.log('JSON.stringify(body) ', JSON.stringify(body) );
+    console.log(generateCurlCommand({ url: ENV + url, method, headers, body }));
+    const safeBody = typeof body === 'string' ? body : JSON.stringify(body);
     const response = await fetch(ENV + url, {
       method,
       headers,
-      ...(body ? { body: JSON.stringify(body) } : {}),
+      ...(body ? { body: safeBody } : {}),
     });
-   console.log(generateCurlCommand({ url: ENV + url, method, headers, body: JSON.stringify(body) }));
 
     if (!response.ok) {
       const text = await response.text();
