@@ -4,6 +4,21 @@ type Headers = { [key: string]: string };
 
 type Request = { url: string, method: string, headers: Headers, body?: any, isTextResponse?: boolean, isProd?: boolean }
 
+function generateCurlCommand({ url, method, headers = {}, body }) {
+  const headerStrings = Object.entries(headers).map(
+    ([key, value]) => `-H "${key}: ${value}"`
+  ).join(' ');
+
+  const safeBody = JSON.stringify(body)
+    .replace(/'/g, `'\\''`); // escape single quotes for shell
+
+  const curl = `curl -X ${method} ${headerStrings} -d '${safeBody}' "${ENV + url}"`;
+
+  console.log('📦 Generated cURL request:\n', curl);
+
+  return curl;
+}
+
 export async function makeRequest({
   url,
   method,
@@ -18,9 +33,7 @@ export async function makeRequest({
       headers,
       ...(body ? { body: JSON.stringify(body) } : {}),
     });
-    // make curl console.log
-    const curlCommand = `curl -X ${method} -H "${Object.entries(headers).map(([key, value]) => `${key}: ${value}`).join(' -H "')}" -d '${JSON.stringify(body)}' ${ENV + url}`;
-    console.log('curlCommand', curlCommand);
+   console.log(generateCurlCommand({ url: ENV + url, method, headers, body: JSON.stringify(body) }));
 
     if (!response.ok) {
       const text = await response.text();
