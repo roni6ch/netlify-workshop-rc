@@ -11,8 +11,7 @@ function generateCurlCommand({ url, method, headers = {}, body }) {
 
   // if body is a string, don't escape it
   // if there is no body, don't include -d
-  const safeBody = typeof body === 'string' ? body : JSON.stringify(body)
-    .replace(/'/g, `'\\''`); // escape single quotes for shell
+  const safeBody = typeof body === 'string' ? body : JSON.stringify(body);
 
   const curl = `curl -X ${method} ${headerStrings} ${safeBody ? `-d '${safeBody}'` : ''} "${ENV + url}"`;
 
