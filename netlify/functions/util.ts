@@ -59,7 +59,7 @@ export async function makeRequest({
     } else {
       const text = await response.text();
       console.warn('⚠️ Non-JSON response, returning raw text');
-      console.log('Raw text response:', text.slice(0, 300));
+      console.log('Raw text response:', text);
       return text;
     }
   } catch (error) {
@@ -74,7 +74,8 @@ export function getCommonHeaders(authToken?: string, additionalHeaders = {}) {
     ...(authToken ? { 'Authorization': `TripActions ${authToken}` } : {}),
     'Content-Type': 'application/json',
     "Connection": "keep-alive",
-    'accept': "*/*",
+    'Accept': "*/*",
+    'Origin': 'https://staging-prime.navan.com',
     ...additionalHeaders
   };
 }
