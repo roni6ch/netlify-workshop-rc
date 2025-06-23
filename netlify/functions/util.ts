@@ -28,8 +28,8 @@ export async function makeRequest({
   isTextResponse,
 }: Request) {
   try {
-    console.log(generateCurlCommand({ url: ENV + url, method, headers, body }));
     const safeBody = typeof body === 'string' ? body : JSON.stringify(body);
+    console.log(generateCurlCommand({ url, method, headers, body: safeBody }));
     const response = await fetch(ENV + url, {
       method,
       headers,
