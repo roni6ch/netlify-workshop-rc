@@ -29,7 +29,9 @@ export async function makeRequest({
 }: Request) {
   try {
     const safeBody = typeof body === 'string' ? body : JSON.stringify(body);
-    console.log(generateCurlCommand({ url, method, headers, body: safeBody }));
+    if (url === '/api/superAdmin/selfonboarding/v2/company') {
+      console.log(generateCurlCommand({ url, method, headers, body: safeBody }));
+    }
     const response = await fetch(ENV + url, {
       method,
       headers,
@@ -39,10 +41,7 @@ export async function makeRequest({
     console.log('response.ok', response.ok);
     console.log('response.status', response.status);
     console.log('response.statusText', response.statusText);
-    console.log('response.body', await response.text());
     console.log('response.headers', response.headers);
-    console.log('response.json()', response.json());
-    console.log('response.headers.get("content-type")', response.headers.get("content-type"));
 
     if (!response.ok) {
       const text = await response.text();
