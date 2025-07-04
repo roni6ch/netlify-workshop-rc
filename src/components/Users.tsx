@@ -73,7 +73,14 @@ export default function Users({ onEligibleChange }: UsersProps) {
   };
 
   useEffect(() => {
-    const user = localStorage.getItem('userName') || Math.random().toString(36).substring(2, 8);
+    function randomLetters(length = 6) {
+      let result = '';
+      while (result.length < length) {
+        result += Math.random().toString(36).replace(/[^a-z]/g, '');
+      }
+      return result.substring(0, length);
+    }
+    const user = localStorage.getItem('userName') || randomLetters();
     setUserName(user);
     checkSplitView(user);
   }, []);

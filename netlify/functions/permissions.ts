@@ -3,7 +3,7 @@ import { getCommonHeaders, loginWithAuthToken, makeRequest } from "./util";
 export default async (req: Request): Promise<Response> => {
     const url = new URL(req.url);
     const userEmail = url.searchParams.get("userEmail") || '';
-    let TAtoken: string = '';
+
 
     async function checkPermissions() {
         const url = `/api/splits/GROWTH_DEBUG_VIEW?userEmail=${userEmail}`;
@@ -12,7 +12,7 @@ export default async (req: Request): Promise<Response> => {
     }
 
     try {
-        TAtoken = await loginWithAuthToken();
+        await loginWithAuthToken();
         const data = await checkPermissions();
         return new Response(
             JSON.stringify({
